@@ -1,540 +1,830 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>오희은 | Biz Ops 운영 포트폴리오</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오희은 | 서비스 기획 · 운영</title>
+  <meta name="description" content="AI와 자동화를 활용해 서비스 운영 구조를 직접 설계하는 기획자">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
   <style>
-    /* ─── TOKENS ─────────────────────────────── */
-    :root {
-      --green:       #00CC66;
-      --green-dk:    #00A352;
-      --green-bg:    #F0FFF8;
-      --green-tag:   #D6F5E8;
-      --dark:        #111827;
-      --body:        #374151;
-      --muted:       #6B7280;
-      --light:       #9CA3AF;
-      --border:      #E5E7EB;
-      --bg:          #F9FAFB;
-      --white:       #FFFFFF;
-      --num-size:    52px;
-    }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+
+    :root {
+      --white:        #FFFFFF;
+      --bg-soft:      #F7F7F8;
+      --bg-card:      #F3F3F4;
+      --border:       #E5E5E6;
+      --border-hover: #282D32;
+      --text-1:       #141416;
+      --text-2:       #50505A;
+      --text-3:       #909098;
+      --charcoal:     #282D32;
+      --charcoal-2:   #1A1E21;
+      --charcoal-a:   rgba(40,45,50,0.07);
+      --sh-sm:        0 1px 4px rgba(0,0,0,0.06);
+      --sh-md:        0 4px 20px rgba(0,0,0,0.09);
+      --sh-lg:        0 12px 40px rgba(0,0,0,0.12);
+      --r:            10px;
+      --r-sm:         6px;
+      --ease:         cubic-bezier(.4,0,.2,1);
+      --t:            0.22s;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
     body {
-      font-family: 'Noto Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-1);
       background: var(--white);
-      color: var(--body);
-      font-size: 14px;
-      line-height: 1.8;
       -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
     }
 
-    /* ─── LAYOUT ──────────────────────────────── */
-    .wrap { max-width: 860px; margin: 0 auto; padding: 0 32px; }
-
-    /* ─── TOPBAR ─────────────────────────────── */
-    .topbar {
-      border-bottom: 1px solid var(--border);
-      padding: 16px 0;
-      position: sticky; top: 0;
-      background: rgba(255,255,255,.95);
-      backdrop-filter: blur(8px);
-      z-index: 100;
+    /* ─── LAYOUT ─── */
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 28px;
     }
-    .topbar-inner {
+    .hr { width: 100%; height: 1px; background: var(--border); }
+
+    /* ─── HEADER ─── */
+    header {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--t) var(--ease);
+    }
+    header.on { border-bottom-color: var(--border); }
+    .h-inner {
+      max-width: 980px; margin: 0 auto; padding: 0 28px;
+      height: 62px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    .topbar-name { font-size: 13px; font-weight: 700; color: var(--dark); letter-spacing: .5px; }
-    .topbar-contact { font-size: 12px; color: var(--muted); }
-    .topbar-contact a { color: var(--green-dk); text-decoration: none; font-weight: 500; }
+    .logo {
+      font-size: 16px; font-weight: 800;
+      color: var(--charcoal); text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    nav { display: flex; gap: 30px; }
+    nav a {
+      font-size: 14px; font-weight: 500;
+      color: var(--text-2); text-decoration: none;
+      transition: color var(--t);
+    }
+    nav a:hover { color: var(--charcoal); }
 
-    /* ─── HERO ───────────────────────────────── */
-    .hero { padding: 72px 0 56px; border-bottom: 1px solid var(--border); }
+    /* ─── MOBILE NAV ─── */
+    .nav-toggle {
+      display: none; width: 36px; height: 36px;
+      border: none; background: none; cursor: pointer;
+      flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px;
+      background: var(--charcoal); border-radius: 2px;
+      transition: transform var(--t) var(--ease), opacity var(--t);
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 800px) {
+      .nav-toggle { display: flex; }
+      nav {
+        display: none; position: absolute; top: 62px; left: 0; right: 0;
+        background: rgba(255,255,255,0.96);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        flex-direction: column; gap: 0;
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+      }
+      nav.open { display: flex; }
+      nav a { padding: 14px 28px; font-size: 15px; }
+      nav a:hover { background: var(--bg-soft); }
+    }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 96px 0 80px;
+      position: relative; overflow: hidden;
+      background-image: radial-gradient(circle, rgba(40,45,50,0.07) 1px, transparent 1px);
+      background-size: 28px 28px;
+      background-position: 14px 14px;
+    }
     .hero-eyebrow {
-      display: inline-flex; align-items: center; gap: 7px;
-      font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-      color: var(--green-dk); margin-bottom: 20px;
+      display: inline-flex; align-items: center; gap: 10px;
+      font-size: 12px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-3);
+      margin-bottom: 24px;
     }
-    .hero-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; }
-    .hero h1 {
-      font-size: 48px; font-weight: 800; color: var(--dark);
-      letter-spacing: -2px; line-height: 1.05; margin-bottom: 10px;
+    .hero-eyebrow-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--charcoal);
     }
-    .hero-sub {
-      font-size: 17px; color: var(--muted); font-weight: 400; margin-bottom: 28px;
+    .hero-name {
+      font-size: clamp(52px, 7vw, 80px);
+      font-weight: 800; letter-spacing: -0.04em;
+      color: var(--charcoal); line-height: 1.0;
+      margin-bottom: 10px;
     }
-    .hero-desc {
-      font-size: 15px; color: var(--body); line-height: 1.9;
-      max-width: 620px; margin-bottom: 36px;
-      border-left: 3px solid var(--green); padding-left: 18px;
+    .hero-role {
+      font-size: clamp(17px, 2.2vw, 20px);
+      font-weight: 500; color: var(--text-2);
+      letter-spacing: -0.01em;
+      margin-bottom: 36px;
     }
-    .hero-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 40px; }
+    .hero-tagline {
+      position: relative;
+      padding: 0 0 0 22px;
+      margin-bottom: 48px;
+      max-width: 520px;
+    }
+    .hero-tagline::before {
+      content: '';
+      position: absolute; left: 0; top: 4px; bottom: 4px;
+      width: 3px; border-radius: 2px;
+      background: var(--charcoal);
+    }
+    .hero-tagline p {
+      font-size: clamp(15px, 1.8vw, 17px);
+      color: var(--text-1); line-height: 1.85;
+    }
+    .hero-tagline strong { font-weight: 600; }
+    .hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 26px;
+      font-size: 14px; font-weight: 600;
+      border-radius: var(--r-sm); text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: all var(--t) var(--ease);
+    }
+    .btn svg { flex-shrink: 0; }
+    .btn-dark {
+      background: var(--charcoal); color: var(--white);
+      border: 1.5px solid var(--charcoal);
+    }
+    .btn-dark:hover { background: var(--charcoal-2); border-color: var(--charcoal-2); transform: translateY(-1px); box-shadow: var(--sh-md); }
+    .btn-outline {
+      background: transparent; color: var(--charcoal);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--charcoal); background: var(--bg-card); transform: translateY(-1px); }
+
+    /* ─── SECTION COMMON ─── */
+    .sec { padding: 76px 0; }
+    .sec-alt { background: var(--bg-soft); }
+    .sec-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 10px;
+    }
+    .sec-title {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 700; letter-spacing: -0.025em;
+      color: var(--charcoal); line-height: 1.3;
+      margin-bottom: 40px;
+    }
+
+    /* ─── ABOUT ─── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 56px; align-items: start;
+    }
+    .about-text { font-size: 16px; color: var(--text-2); line-height: 1.9; }
+    .about-text strong { color: var(--text-1); font-weight: 600; }
+    .about-text p + p { margin-top: 18px; }
+    .about-chips {
+      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px;
+    }
     .chip {
-      font-size: 12px; font-weight: 600; padding: 6px 14px; border-radius: 20px;
-      background: var(--green-bg); color: var(--green-dk);
-      border: 1px solid var(--green-tag);
+      font-size: 12px; font-weight: 600;
+      padding: 6px 14px; border-radius: 100px;
+      background: var(--charcoal-a); color: var(--charcoal);
+      letter-spacing: 0.01em;
+    }
+    .about-sidebar { display: flex; flex-direction: column; gap: 14px; }
+    .sidebar-card {
+      padding: 20px 22px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r);
+    }
+    .sidebar-card-top {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+    }
+    .sidebar-icon {
+      width: 30px; height: 30px; border-radius: var(--r-sm);
+      background: var(--charcoal);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .sidebar-card-label {
+      font-size: 13px; font-weight: 700; color: var(--text-1);
+    }
+    .sidebar-card-desc {
+      font-size: 13px; color: var(--text-2); line-height: 1.6;
     }
 
-    /* ─── KEY NUMBERS ────────────────────────── */
-    .numbers { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-top: 8px; }
-    .number-item { background: var(--white); padding: 24px 20px; }
-    .number-val {
-      font-size: var(--num-size); font-weight: 800; color: var(--green);
-      line-height: 1; letter-spacing: -2px;
+    /* ─── METRICS ─── */
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 14px;
     }
-    .number-label { font-size: 12px; color: var(--muted); margin-top: 6px; line-height: 1.5; }
+    .m-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 28px 18px; text-align: center;
+      transition: box-shadow var(--t) var(--ease), transform var(--t) var(--ease), border-color var(--t);
+    }
+    .m-card:hover {
+      box-shadow: var(--sh-md); transform: translateY(-3px);
+      border-color: var(--charcoal);
+    }
+    .m-number {
+      display: inline-block;
+      font-size: 30px; font-weight: 800;
+      color: var(--charcoal); letter-spacing: -0.03em;
+      line-height: 1.1; margin-bottom: 8px;
+      background: var(--charcoal-a);
+      padding: 4px 14px; border-radius: 8px;
+    }
+    .m-label {
+      font-size: 13px; font-weight: 600; color: var(--text-1);
+      margin-bottom: 6px;
+    }
+    .m-sub { font-size: 11px; color: var(--text-3); line-height: 1.5; }
 
-    /* ─── JD MAP BANNER ──────────────────────── */
-    .jdmap {
-      margin: 0; padding: 0;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
+    /* ─── CASES ─── */
+    .cases-grid {
+      display: grid; grid-template-columns: repeat(2,1fr); gap: 18px;
     }
-    .jdmap-inner {
-      padding: 40px 0;
+    .c-card {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 30px;
+      display: flex; flex-direction: column; gap: 14px;
+      text-decoration: none; color: inherit;
+      transition: box-shadow var(--t) var(--ease),
+                  transform var(--t) var(--ease),
+                  border-color var(--t);
     }
-    .jdmap-label {
-      font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
-      color: var(--green-dk); margin-bottom: 16px;
+    .c-card:hover {
+      box-shadow: var(--sh-md); transform: translateY(-3px);
+      border-color: var(--charcoal);
     }
-    .jdmap-title {
-      font-size: 18px; font-weight: 800; color: var(--dark); margin-bottom: 20px;
+    .c-tags { display: flex; gap: 7pz; flex-wrap: wrap; }
+    .c-tag {
+      font-size: 11px; font-weight: 600;
+      color: var(--charcoal); background: var(--charcoal-a);
+      padding: 4px 10px; border-radius: 100px;
     }
-    .jdmap-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    .c-title {
+      font-size: 17px; font-weight: 700;
+      color: var(--text-1); letter-spacing: -0.02em; line-height: 1.45;
     }
-    .jdmap-item {
-      background: var(--white); border: 1px solid var(--border);
-      border-radius: 10px; padding: 18px 20px;
+    .c-desc {
+      font-size: 14px; color: var(--text-2);
+      line-height: 1.75; flex: 1;
     }
-    .jdmap-jd {
-      font-size: 11px; font-weight: 700; color: var(--light);
-      letter-spacing: 1px; margin-bottom: 8px; text-transform: uppercase;
+    .c-bottom {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-top: 16px; border-top: 1px solid var(--border);
+      margin-top: auto;
     }
-    .jdmap-jd-text {
-      font-size: 12.5px; font-weight: 600; color: var(--muted);
-      margin-bottom: 10px; line-height: 1.5;
+    .c-metric { display: flex; flex-direction: column; gap: 2px; }
+    .c-metric-val {
+      display: inline-block;
+      font-size: 18px; font-weight: 800;
+      color: var(--charcoal); letter-spacing: -0.02em;
+      background: var(--charcoal-a);
+      padding: 2px 10px; border-radius: 6px;
     }
-    .jdmap-arrow {
-      color: var(--green); font-size: 14px; font-weight: 700;
-      margin: 8px 0; display: block;
+    .c-metric-lab { font-size: 11px; color: var(--text-3); }
+    .c-arrow {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--charcoal); flex-shrink: 0;
+      transition: background var(--t), border-color var(--t), transform var(--t);
     }
-    .jdmap-my {
-      font-size: 13px; font-weight: 700; color: var(--dark); line-height: 1.5;
+    .c-card:hover .c-arrow {
+      background: var(--charcoal); border-color: var(--charcoal); color: var(--white);
+      transform: translateX(3px);
     }
 
-    /* ─── SECTION ────────────────────────────── */
-    .section { padding: 64px 0; border-bottom: 1px solid var(--border); }
-    .section:last-child { border-bottom: none; }
-    .sec-head { margin-bottom: 40px; }
-    .sec-label {
-      font-size: 11px; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase;
-      color: var(--green-dk); margin-bottom: 8px;
-    }
-    .sec-title { font-size: 24px; font-weight: 800; color: var(--dark); line-height: 1.2; }
-    .sec-desc { font-size: 14px; color: var(--muted); margin-top: 8px; }
-
-    /* ─── SELECTED CASE CARDS ────────────────── */
-    .selected-cases { display: flex; flex-direction: column; gap: 24px; }
-    .case-card {
-      border: 1px solid var(--border); border-radius: 12px;
-      overflow: hidden; background: var(--white);
-      transition: box-shadow .2s;
-    }
-    .case-card:hover { box-shadow: 0 4px 24px rgba(0,0,0,.07); }
-    .case-card-header {
-      padding: 28px 32px 20px;
-      border-bottom: 1px solid var(--border);
-      display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
-    }
-    .case-num-badge {
-      font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
-      color: var(--green-dk); background: var(--green-bg);
-      border: 1px solid var(--green-tag);
-      padding: 4px 10px; border-radius: 20px; white-space: nowrap;
-    }
-    .case-jd-tag {
-      font-size: 10px; font-weight: 700; letter-spacing: 1px;
-      color: var(--muted); background: var(--bg);
-      border: 1px solid var(--border);
-      padding: 3px 10px; border-radius: 20px; white-space: nowrap;
-    }
-    .case-badges { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-    .case-title { font-size: 18px; font-weight: 700; color: var(--dark); line-height: 1.35; flex: 1; }
-    .case-body { padding: 24px 32px 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-    .case-col {}
-    .case-col-label {
-      font-size: 10.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-      color: var(--light); margin-bottom: 8px;
-    }
-    .case-col-text { font-size: 13.5px; color: var(--body); line-height: 1.75; }
-    .case-col-text ul { padding-left: 16px; }
-    .case-col-text li { margin-bottom: 4px; }
-    .case-outcome {
-      grid-column: 1 / -1;
-      background: var(--green-bg); border: 1px solid var(--green-tag);
-      border-radius: 8px; padding: 16px 20px;
-      display: flex; align-items: center; justify-content: space-between; gap: 16px;
-      flex-wrap: wrap;
-    }
-    .outcome-text { font-size: 14px; font-weight: 600; color: var(--dark); }
-    .outcome-num { font-size: 28px; font-weight: 800; color: var(--green); line-height: 1; letter-spacing: -1px; white-space: nowrap; }
-    .case-footer {
-      padding: 16px 32px;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: flex-end;
-    }
-    .case-link {
-      font-size: 12px; font-weight: 600; color: var(--green-dk);
-      text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
-      transition: gap .15s;
-    }
-    .case-link:hover { gap: 8px; }
-    .case-link::after { content: '→'; }
-
-    /* ─── OTHER CASES ────────────────────────── */
-    .other-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .other-card {
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 22px 24px;
-      background: var(--white);
-      transition: border-color .2s, box-shadow .2s;
-    }
-    .other-card:hover { border-color: var(--green); box-shadow: 0 2px 12px rgba(0,204,102,.08); }
-    .other-num { font-size: 11px; font-weight: 700; color: var(--light); letter-spacing: 1px; margin-bottom: 8px; }
-    .other-title { font-size: 14px; font-weight: 700; color: var(--dark); line-height: 1.4; margin-bottom: 8px; }
-    .other-desc { font-size: 12.5px; color: var(--muted); line-height: 1.7; margin-bottom: 12px; }
-    .other-result { font-size: 12px; font-weight: 600; color: var(--green-dk); }
-    .other-link {
-      display: inline-flex; align-items: center; gap: 3px;
-      margin-top: 12px; font-size: 11.5px; font-weight: 600;
-      color: var(--light); text-decoration: none;
-      transition: color .15s;
-    }
-    .other-link:hover { color: var(--green-dk); }
-    .other-link::after { content: ' →'; }
-
-    /* ─── SKILLS ─────────────────────────────── */
-    .skills-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 14px; }
-    .skill-card {
-      border: 1px solid var(--border); border-radius: 10px;
-      padding: 22px 24px; background: var(--white);
-    }
-    .skill-name {
-      font-size: 13px; font-weight: 700; color: var(--dark);
-      margin-bottom: 12px; padding-bottom: 10px;
-      border-bottom: 2px solid var(--green-bg);
-    }
-    .skill-name span { color: var(--green); }
-    .skill-tags { font-size: 13px; color: var(--muted); line-height: 1.9; }
-
-    /* ─── CAREER ─────────────────────────────── */
-    .career-list { display: flex; flex-direction: column; }
-    .career-row {
+    /* ─── EXPERIENCE ─── */
+    .exp-list { display: flex; flex-direction: column; gap: 0; }
+    .exp-item {
       display: grid; grid-template-columns: 180px 1fr;
-      gap: 24px; padding: 28px 0; border-bottom: 1px solid var(--border);
+      gap: 32px; padding: 32px 0;
+      border-bottom: 1px solid var(--border);
     }
-    .career-row:last-child { border-bottom: none; }
-    .career-left {}
-    .career-company { font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 3px; }
-    .career-period { font-size: 12px; color: var(--muted); margin-bottom: 3px; }
-    .career-role { font-size: 12px; font-weight: 600; color: var(--green-dk); }
-    .career-desc { font-size: 13px; color: var(--body); line-height: 1.8; padding-top: 2px; }
-    .career-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-    .career-tag {
-      font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px;
-      background: var(--green-bg); color: var(--green-dk);
-      border: 1px solid var(--green-tag);
+    .exp-item:last-child { border-bottom: none; }
+    .exp-period { font-size: 13px; color: var(--text-3); padding-top: 3px; }
+    .exp-company {
+      font-size: 16px; font-weight: 700; color: var(--text-1);
+      letter-spacing: -0.01em; margin-bottom: 4px;
+    }
+    .exp-role {
+      font-size: 14px; color: var(--text-2); margin-bottom: 14px;
+    }
+    .exp-points { display: flex; flex-direction: column; gap: 7px; }
+    .exp-point {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--text-2); line-height: 1.65;
+    }
+    .exp-point::before {
+      content: '';
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--charcoal); flex-shrink: 0;
+      margin-top: 9px;
     }
 
-    /* ─── FOOTER ─────────────────────────────── */
+    /* ─── SKILLS ─── */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 16px;
+    }
+    .sk-group {
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 22px 24px;
+    }
+    .sk-title {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--charcoal);
+      margin-bottom: 16px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sk-list { display: flex; flex-direction: column; gap: 9px; }
+    .sk-item {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 13.5px; color: var(--text-2);
+    }
+    .sk-item::before {
+      content: '';
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--charcoal); flex-shrink: 0;
+    }
+
+    /* ─── FOOTER ─── */
     footer {
-      background: var(--bg); border-top: 1px solid var(--border);
-      text-align: center; padding: 36px 32px; font-size: 12.5px; color: var(--muted);
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
     }
-    footer a { color: var(--green-dk); text-decoration: none; font-weight: 500; }
+    .footer-grid {
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+    .footer-name {
+      font-size: 22px; font-weight: 800;
+      color: var(--charcoal); letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .footer-sub { font-size: 14px; color: var(--text-3); }
+    .footer-actions { display: flex; gap: 10px; flex-wrap: wrap; }
 
-    /* ─── RESPONSIVE ─────────────────────────── */
-    @media (max-width: 680px) {
-      .hero h1 { font-size: 36px; }
-      .numbers { grid-template-columns: 1fr 1fr; }
-      .numbers .number-item:last-child { grid-column: 1/-1; }
-      .case-body { grid-template-columns: 1fr; }
-      .other-grid { grid-template-columns: 1fr; }
+    /* ─── FADE IN ─── */
+    .fi {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+    }
+    .fi.show { opacity: 1; transform: none; }
+    .fi:nth-child(2) { transition-delay: 0.08s; }
+    .fi:nth-child(3) { transition-delay: 0.16s; }
+    .fi:nth-child(4) { transition-delay: 0.24s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 800px) {
+      .hero-bg { display: none; }
+      .about-grid { grid-template-columns: 1fr; gap: 36px; }
+      .metrics-grid { grid-template-columns: repeat(2,1fr); }
+      .cases-grid { grid-template-columns: 1fr; }
+      .exp-item { grid-template-columns: 1fr; gap: 8px; }
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 500px) {
+      .metrics-grid { grid-template-columns: 1fr 1fr; }
       .skills-grid { grid-template-columns: 1fr; }
-      .career-row { grid-template-columns: 1fr; gap: 8px; }
-      .case-card-header { flex-direction: column; }
-      .number-val { font-size: 40px; }
-      .jdmap-grid { grid-template-columns: 1fr; }
+      .hero-cta { flex-direction: column; }
+      .btn { justify-content: center; }
+      .sec { padding: 56px 0; }
     }
   </style>
 </head>
 <body>
 
-<!-- TOPBAR -->
-<nav class="topbar">
-  <div class="wrap">
-    <div class="topbar-inner">
-      <span class="topbar-name">오 희 은 · Biz Ops Portfolio</span>
-      <span class="topbar-contact">
-        <a href="mailto:gldms1009@naver.com">gldms1009@naver.com</a>
-        &nbsp;·&nbsp; 010-2357-2674
-      </span>
-    </div>
+<!-- ══ HEADER ══ -->
+<header id="hd">
+  <div class="h-inner">
+    <a href="#" class="logo">OH.</a>
+    <nav id="nav">
+      <a href="#about">소개</a>
+      <a href="#cases">케이스 스터디</a>
+      <a href="#exp">경력</a>
+      <a href="#contact">연락하기</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-</nav>
+</header>
 
-<!-- HERO -->
+<!-- ══ HERO ══ -->
 <section class="hero">
   <div class="wrap">
-    <div class="hero-eyebrow"><span class="hero-dot"></span>Biz Ops · 운영 구조 설계 · 정산 · 어뷰징 대응</div>
-    <h1>오 희 은</h1>
-    <p class="hero-sub">같은 문제가 반복되면 사람이 아니라 구조를 바꿉니다</p>
-    <p class="hero-desc">
-      VOC 분석 → PO 협의 → 서비스 개선, 파트너 정산 기준 재정의,<br>
-      <strong>어뷰징 탐지 및 대응 기준 수립까지</strong> — 운영 문제를 구조로 차단하고<br>
-      리스크를 통제해 왔습니다. 빠르게 성장하는 환경에서도<br>
-      운영이 멈추지 않도록 기준을 만들고 실행합니다.
-    </p>
-    <div class="hero-chips">
-      <span class="chip">BizOps</span>
-      <span class="chip">운영 구조 설계</span>
-      <span class="chip">VOC → 서비스 개선</span>
-      <span class="chip">정산 / 리스크 관리</span>
-      <span class="chip">어뷰징 대응 기준</span>
-      <span class="chip">마일리지·포인트 정책</span>
-      <span class="chip">자동화</span>
+    <div class="hero-eyebrow">
+      <span class="hero-eyebrow-dot"></span>
+      Service Planning &amp; Operations
     </div>
-    <div class="numbers">
-      <div class="number-item">
-        <div class="number-val">14.7배↑</div>
-        <div class="number-label">배상 회수율 개선<br>월 50만 → 700만 원+</div>
+
+    <h1 class="hero-name">오희은</h1>
+    <p class="hero-role">서비스 기획 · 운영 매니저</p>
+
+    <div class="hero-tagline">
+      <p>
+        AI 서비스가 상상에서 멈추지 않도록 —<br>
+        <strong>데이터를 읽고, 구조를 설계하고, 직접 실행합니다.</strong>
+      </p>
+    </div>
+
+    <div class="hero-cta">
+      <a href="#cases" class="btn btn-dark">
+        케이스 스터디 보기
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <a href="mailto:gldms1009@naver.com" class="btn btn-outline">
+        이메일 연락하기
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <rect x="1.5" y="3" width="11" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4"/>
+          <path d="M1.5 4.5L7 8L12.5 4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ ABOUT ══ -->
+<section class="sec" id="about">
+  <div class="wrap">
+    <p class="sec-eyebrow">About</p>
+    <h2 class="sec-title">반복되는 문제 안에서<br>구조적 원인을 찾습니다</h2>
+
+    <div class="about-grid">
+      <div>
+        <div class="about-text fi">
+          <p>
+            CS 운영 현장에서 <strong>같은 문제가 반복되는 이유를 데이터로 파고들었습니다.</strong>
+            VOC를 분류하고, 서비스 로직의 빈틈을 정의하고,
+            실행 가능한 해결 구조를 직접 만들었습니다.
+          </p>
+          <p>
+            Claude·NotebookLM·GPT를 실무에 직접 접합해 재배송 자동화, 계약서 분석,
+            운영 기준 설계까지 — 비개발 직군 중 유일하게 AI 도구 비용을 업무비로 공식 승인받아
+            <strong>AI를 실무 파트너로 사용</strong>해왔습니다.
+          </p>
+          <p>
+            AI 서비스가 고객에게 실제로 작동하려면,
+            도구만큼이나 그 도구를 둘러싼 운영 구조가 중요합니다.
+            그 구조를 설계하는 역할을 하고 싶습니다.
+          </p>
+        </div>
+        <div class="about-chips fi">
+          <span class="chip">VOC 분석</span>
+          <span class="chip">운영 구조 설계</span>
+          <span class="chip">AI 실무 적용</span>
+          <span class="chip">자동화 직접 구현</span>
+          <span class="chip">Fail-soft UX 설계</span>
+          <span class="chip">CS Fallback 전략</span>
+        </div>
       </div>
-      <div class="number-item">
-        <div class="number-val">95%+</div>
-        <div class="number-label">AS 재확인 왕복 제거<br>직접 기획·요건 정의</div>
-      </div>
-      <div class="number-item">
-        <div class="number-val">8→2</div>
-        <div class="number-label">운영 프로세스 축소<br>자동화 설계</div>
+
+      <div class="about-sidebar">
+        <div class="sidebar-card fi">
+          <div class="sidebar-card-top">
+            <div class="sidebar-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <rect x="1" y="1" width="5" height="5" rx="1" fill="white"/>
+                <rect x="8" y="1" width="5" height="5" rx="1" fill="white"/>
+                <rect x="1" y="8" width="5" height="5" rx="1" fill="white"/>
+                <rect x="8" y="8" width="5" height="5" rx="1" fill="white"/>
+              </svg>
+            </div>
+            <span class="sidebar-card-label">AI 실무 적용</span>
+          </div>
+          <p class="sidebar-card-desc">비개발 직군 중 유일하게 Claude·GPT 비용을 업무비로 공식 승인받아 재배송 자동화·계약서 분석·VOC 개선에 직접 활용</p>
+        </div>
+        <div class="sidebar-card fi">
+          <div class="sidebar-card-top">
+            <div class="sidebar-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/>
+                <path d="M7 4V7L9 9" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+            <span class="sidebar-card-label">데이터 기반 의사결정</span>
+          </div>
+          <p class="sidebar-card-desc">VOC 173건 전수 분석 → 행동 시점 검증 로직 설계 → 이커머스 리드 제안 → 운영 fallback 전략 수립</p>
+        </div>
+        <div class="sidebar-card fi">
+          <div class="sidebar-card-top">
+            <div class="sidebar-icon">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path d="M2 4L7 2L12 4V8C12 10.5 7 13 7 13C7 13 2 10.5 2 8V4Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <span class="sidebar-card-label">직접 구현하는 운영 설계</span>
+          </div>
+          <p class="sidebar-card-desc">Chrome Extension·VBA·Apps Script로 반복 업무를 8단계에서 2단계로 축소. 아이디어를 직접 실행으로 연결</p>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- JD MAP -->
-<div class="jdmap">
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ METRICS ══ -->
+<section class="sec sec-alt">
   <div class="wrap">
-    <div class="jdmap-inner">
-      <div class="jdmap-label">JD Match</div>
-      <div class="jdmap-title">야핏무브 Biz Ops 3대 업무 — 직접 대응 경험</div>
-      <div class="jdmap-grid">
-        <div class="jdmap-item">
-          <div class="jdmap-jd">JD 01</div>
-          <div class="jdmap-jd-text">VOC 분석 기반 운영 구조 개선 · PO·개발팀 서비스 개선 요청</div>
-          <span class="jdmap-arrow">↓</span>
-          <div class="jdmap-my">Fail-soft UX 설계 → CS 인입 주 2-3건 → 0건<br>환불·교환 의도 구조화 → AS 재확인 왕복 95%+ 제거</div>
-        </div>
-        <div class="jdmap-item">
-          <div class="jdmap-jd">JD 02</div>
-          <div class="jdmap-jd-text">파트너 정산 검증 · 어뷰징 모니터링 · 방어 정책 수립</div>
-          <span class="jdmap-arrow">↓</span>
-          <div class="jdmap-my">택배·물류 정산 기준 재정의 → 회수율 14.7배↑<br>외부 협력사 청구서 검증 · 환불·전도금 정산 실무<br>리셀러·다계정 패턴 탐지 → 대응 기준 수립 → 유관부서 협의</div>
-        </div>
-        <div class="jdmap-item">
-          <div class="jdmap-jd">JD 03</div>
-          <div class="jdmap-jd-text">도메인 오너십 · 운영 구조 구축 · 자동화 · 가이드 작성</div>
-          <span class="jdmap-arrow">↓</span>
-          <div class="jdmap-my">조직 변화 상황에서 운영 기준 정비·온보딩·자동화 단독 수행<br>반복 입력 8→2단계 축소 · 비개발 직군 중 AI 업무비 유일 승인</div>
-        </div>
+    <p class="sec-eyebrow">Key Results</p>
+    <h2 class="sec-title">숫자로 말하는 성과</h2>
+    <div class="metrics-grid">
+      <div class="m-card fi">
+        <div class="m-number">유일</div>
+        <div class="m-label">AI 도구 업무비 승인</div>
+        <div class="m-sub">비개발 직군 중<br>Gemini Pro 기본 제공 환경</div>
+      </div>
+      <div class="m-card fi">
+        <div class="m-number">1,151건</div>
+        <div class="m-label">재배송 단독 처리</div>
+        <div class="m-sub">Claude · Chrome Ext 직접 구현<br>8→2단계 축소</div>
+      </div>
+      <div class="m-card fi">
+        <div class="m-number">VOC 0건</div>
+        <div class="m-label">장바구니 결합 오류 해결</div>
+        <div class="m-sub">주 2-3건 → 0건<br>Fail-soft UX 설계</div>
+      </div>
+      <div class="m-card fi">
+        <div class="m-number">14.7배↑</div>
+        <div class="m-label">배상 회수율 개선</div>
+        <div class="m-sub">약관 · 계약 기준 재정의<br>Claude · NotebookLM 교차 분석</div>
       </div>
     </div>
   </div>
-</div>
+</section>
 
-<!-- SELECTED CASES -->
-<section class="section">
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ CASES ══ -->
+<section class="sec" id="cases">
   <div class="wrap">
-    <div class="sec-head">
-      <div class="sec-label">Selected Cases</div>
-      <div class="sec-title">핵심 케이스 — 야핏무브 JD 직접 대응</div>
-    </div>
-    <div class="selected-cases">
+    <p class="sec-eyebrow">Case Study</p>
+    <h2 class="sec-title">실제로 해결한 문제들</h2>
+    <div class="cases-grid">
 
-      <!-- CASE 01 — 정산·약관 기반 손실 구조화 -->
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-title">외부 파트너 책임 구조 재정의 — 배상 회수율 14.7배 개선</div>
-          <div class="case-badges">
-            <span class="case-jd-tag">JD 02 · 정산 실무</span>
-            <span class="case-num-badge">CASE 01</span>
+      <!-- Card 1: 8→2단계 자동화 (Case 3) -->
+      <a class="c-card fi" href="https://www.notion.so/31795f53ab8a802d83f9effd47edcca5" target="_blank" rel="noopener">
+        <div class="c-tags">
+          <span class="c-tag">워크플로우 자동화</span>
+          <span class="c-tag">직접 구현</span>
+        </div>
+        <h3 class="c-title">반복 운영 프로세스 8→2단계 자동화</h3>
+        <p class="c-desc">Chrome Extension·VBA·Apps Script를 활용해 반복 운영 업무를 직접 자동화했습니다. 수동 8단계를 2단계로 축소하며 운영 생산성과 정합성을 동시에 높였습니다.</p>
+        <div class="c-bottom">
+          <div class="c-metric">
+            <span class="c-metric-val">8→2단계</span>
+            <span class="c-metric-lab">프로세스 축소</span>
+          </div>
+          <div class="c-arrow">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
         </div>
-        <div class="case-body">
-          <div class="case-col">
-            <div class="case-col-label">Problem</div>
-            <div class="case-col-text">
-              택배사·물류 파트너 전환 과정에서 회수·사진 증빙 중심의 복잡한 절차 때문에 보상 처리가 계속 밀림. <strong>파트너 회신을 기다리는 동안 손실이 그대로 묻히는 구조.</strong>
-            </div>
-          </div>
-          <div class="case-col">
-            <div class="case-col-label">What I Did</div>
-            <div class="case-col-text">
-              <ul>
-                <li>택배 표준약관 직접 검토 → 파손 시 <strong>택배사 선통보 의무</strong>를 근거로 협상 주도권 전환</li>
-                <li>물류계약서 직접 분석 → 계약서상 파트너 귀책 피해는 <strong>택배사 배상 승인 없이 월 물류비에서 직접 차감 가능</strong>함을 발견, 정산 기준으로 정리</li>
-                <li>손실 유형별 비용 기준 정리 → 정산 협상에 바로 활용 가능한 자료로 전환</li>
-              </ul>
-            </div>
-          </div>
-          <div class="case-outcome">
-            <div class="outcome-text">월 배상 회수액<br><span style="color:var(--muted); font-weight:400; font-size:13px;">약 50만 원 → 700만 원 이상 · 파트너 회신 무관하게 통제 가능</span></div>
-            <div class="outcome-num">14.7배↑</div>
-          </div>
-        </div>
-        <div class="case-footer">
-          <a class="case-link" href="https://www.notion.so/Case-7-32395f53ab8a800d9403d826419f8c1e" target="_blank">케이스 전체 보기 (노션)</a>
-        </div>
-      </div>
+      </a>
 
-      <!-- CASE 02 — 환불·교환 의도 구조화 (JD01) -->
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-title">환불·교환 의도 구조화 — AS 재확인 왕복 95%+ 제거</div>
-          <div class="case-badges">
-            <span class="case-jd-tag">JD 01 · VOC → 서비스 개선</span>
-            <span class="case-num-badge">CASE 02</span>
+      <!-- Card 2: Fail-soft UX (Case 2) -->
+      <a class="c-card fi" href="https://www.notion.so/22495f53ab8a814f99a3eceb6058c406" target="_blank" rel="noopener">
+        <div class="c-tags">
+          <span class="c-tag">VOC 분석</span>
+          <span class="c-tag">UX 설계</span>
+        </div>
+        <h3 class="c-title">장바구니 결합 오류 Fail-soft UX 설계</h3>
+        <p class="c-desc">기술 제약으로 해결 불가한 오류를 시스템 구조 문제로 재정의하고, 오류 상황에서도 사용자가 이탈하지 않는 Fail-soft UX를 설계해 개발팀과 합의했습니다.</p>
+        <div class="c-bottom">
+          <div class="c-metric">
+            <span class="c-metric-val">주 2-3건 → 0건</span>
+            <span class="c-metric-lab">CS 인입 완전 감소</span>
+          </div>
+          <div class="c-arrow">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
         </div>
-        <div class="case-body">
-          <div class="case-col">
-            <div class="case-col-label">Problem</div>
-            <div class="case-col-text">
-              AS 문의 고객의 환불·교환 의도가 자유 텍스트에 묻혀 CS가 매번 재확인해야 하는 구조. <strong>왕복 확인이 반복될수록 처리 리드타임이 늘고 데이터 정합성도 떨어지는 상황.</strong>
-            </div>
-          </div>
-          <div class="case-col">
-            <div class="case-col-label">What I Did</div>
-            <div class="case-col-text">
-              <ul>
-                <li>반복 확인이 발생하는 구간 특정 → <strong>환불·교환 의도가 자유 텍스트에 묻히는 입력 구조</strong>가 원인임을 재정의</li>
-                <li>기존 CRM 중복 필드를 재구성해 <strong>요청 유형을 선택값으로 수집</strong>하도록 입력 구조 설계</li>
-                <li>직접 기획·요건 정의 → 개발팀 협의 → 구현 완료</li>
-              </ul>
-            </div>
-          </div>
-          <div class="case-outcome">
-            <div class="outcome-text">AS 재확인 왕복<br><span style="color:var(--muted); font-weight:400; font-size:13px;">직접 기획·요건 정의 → 구현 완료 · 처리 리드타임 단축</span></div>
-            <div class="outcome-num">95%+ 제거</div>
-          </div>
-        </div>
-        <div class="case-footer">
-          <a class="case-link" href="https://www.notion.so/Case-4-2b395f53ab8a80b1b605d2b053b459fe" target="_blank">케이스 전체 보기 (노션)</a>
-        </div>
-      </div>
+      </a>
 
-      <!-- CASE 03 — 반복 입력 자동화 (JD03) -->
-      <div class="case-card">
-        <div class="case-card-header">
-          <div class="case-title">반복 입력 자동화 설계 — 운영 프로세스 8단계 → 2단계</div>
-          <div class="case-badges">
-            <span class="case-jd-tag">JD 03 · 자동화 · 도메인 오너십</span>
-            <span class="case-num-badge">CASE 03</span>
+      <!-- Card 3: 파트너 손실 책임구조 재정의 (Case 1) -->
+      <a class="c-card fi" href="https://www.notion.so/32395f53ab8a800d9403d826419f8c1e" target="_blank" rel="noopener">
+        <div class="c-tags">
+          <span class="c-tag">파트너 협의</span>
+          <span class="c-tag">운영 구조 설계</span>
+        </div>
+        <h3 class="c-title">파트너 손실 책임구조 재정의 및 배상 기준 수립</h3>
+        <p class="c-desc">택배·물류 파트너 전환 시기의 반복 손실을 약관·계약 기반으로 재정의했습니다. 정산 선공제 구조를 직접 설계해 파트너 회신과 무관하게 손실을 통제할 수 있는 구조를 확보했습니다.</p>
+        <div class="c-bottom">
+          <div class="c-metric">
+            <span class="c-metric-val">14.7배↑</span>
+            <span class="c-metric-lab">배상 회수율 개선</span>
+          </div>
+          <div class="c-arrow">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
         </div>
-        <div class="case-body">
-          <div class="case-col">
-            <div class="case-col-label">Problem</div>
-            <div class="case-col-text">
-              대량 취소·반품 처리 시 반복 입력 구간이 많고 귀책 분류 오류가 반복됨. <strong>수작업 8단계에 의존하는 구조라 처리 속도도 느리고 데이터 정합성도 떨어지는 상황.</strong>
-            </div>
+      </a>
+
+      <!-- Card 4: 환불·교환 입력 구조 재설계 (Case 5) -->
+      <a class="c-card fi" href="https://www.notion.so/2b395f53ab8a80b1b605d2b053b459fe" target="_blank" rel="noopener">
+        <div class="c-tags">
+          <span class="c-tag">입력 구조 설계</span>
+          <span class="c-tag">운영 효율화</span>
+        </div>
+        <h3 class="c-title">고객 의도 기반 환불·교환 입력 구조 재설계</h3>
+        <p class="c-desc">자유 텍스트에 묻혀 있던 고객 의도를 필수 선택값으로 구조화해, AS 재확인 왕복을 95% 이상 없앴습니다. 중복 필드를 활용하는 스펙을 직접 설계해 개발 범위를 최소화하고 빠르게 반영했습니다.</p>
+        <div class="c-bottom">
+          <div class="c-metric">
+            <span class="c-metric-val">왕복 95%+</span>
+            <span class="c-metric-lab">AS 재확인 감소</span>
           </div>
-          <div class="case-col">
-            <div class="case-col-label">What I Did</div>
-            <div class="case-col-text">
-              <ul>
-                <li>반복 구간을 처리 흐름별로 분해해 <strong>자동화 가능한 단위를 직접 정의</strong></li>
-                <li>Chrome Extension 기반 자동화 설계 — 코드 없이 반복 입력·귀책 분류를 처리하는 구조로 구현</li>
-                <li>수동 검수 병행 구조 설계로 <strong>오류 통제와 속도 개선을 동시에 확보</strong></li>
-              </ul>
-            </div>
-          </div>
-          <div class="case-outcome">
-            <div class="outcome-text">운영 프로세스 단계 수<br><span style="color:var(--muted); font-weight:400; font-size:13px;">비개발 직군 중 AI 업무비 유일 승인 · 입력 오류·분류 실수 감소</span></div>
-            <div class="outcome-num">8→2단계</div>
+          <div class="c-arrow">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
           </div>
         </div>
-        <div class="case-footer">
-          <a class="case-link" href="https://www.notion.so/Case-6-31795f53ab8a802d83f9effd47edcca5" target="_blank">케이스 전체 보기 (노션)</a>
-        </div>
-      </div>
+      </a>
 
     </div>
   </div>
 </section>
 
-<!-- OTHER CASES -->
-<section class="section" style="background: var(--bg);">
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ EXPERIENCE ══ -->
+<section class="sec sec-alt" id="exp">
   <div class="wrap">
-    <div class="sec-head">
-      <div class="sec-label">All Cases</div>
-      <div class="sec-title">추가 케이스</div>
-      <div class="sec-desc">주요 케이스는 노션에서 상세 확인 가능합니다 (일부 민감 케이스 제외)</div>
-    </div>
-    <div class="other-grid">
-
-      <div class="other-card">
-        <div class="other-num">CASE 04</div>
-        <div class="other-title">프로모션 조건 오인 VOC 구조화 → 행동 시점 UX 개선 요건 정의</div>
-        <div class="other-desc">1+1/2+1 프로모션 VOC 총 173건을 채널·행동 흐름별로 재분류. 핵심 원인을 '행동 시점 피드백 부재'로 재정의, 조건 미충족 시 즉시 안내하는 검증 로직을 설계해 이커머스 리드와 개선 방향 협의.</div>
-        <div class="other-result">→ VOC 패턴 유형화 · 검증 로직 설계 · 이커머스 리드 협의.</div>
-        <a class="other-link" href="https://www.notion.so/27e95f53ab8a80f9961cf839293a7541" target="_blank">자세히 보기</a>
+    <p class="sec-eyebrow">Experience</p>
+    <h2 class="sec-title">경력</h2>
+    <div class="exp-list">
+      <div class="exp-item fi">
+        <div class="exp-period">2024.12 – 현재</div>
+        <div>
+          <div class="exp-company">초록마을</div>
+          <div class="exp-role">CS 운영 · 서비스 기획</div>
+          <div class="exp-points">
+            <div class="exp-point">Claude·NotebookLM 교차 검증으로 계약서를 분석해 외부 파트너 협상 근거 확보 → 배상 회수율 14.7배 개선</div>
+            <div class="exp-point">VOC 분류·분석으로 장바구니 결합 오류 구조 파악 → Fail-soft UX 설계 → CS 인입 주 2-3건에서 0건으로 감소</div>
+            <div class="exp-point">Chrome Extension·VBA로 반복 운영 프로세스 직접 자동화 — 8단계에서 2단계로 축소</div>
+            <div class="exp-point">비개발 직군 중 유일하게 Claude·GPT 비용을 업무비로 공식 승인받아 실무 전반에 적용</div>
+          </div>
+        </div>
       </div>
-
-      <div class="other-card">
-        <div class="other-num">CASE 05</div>
-        <div class="other-title">VOC 분석 → Fail-soft UX 설계 — CS 인입 주 2-3건 → 0건</div>
-        <div class="other-desc">배송 가능일 상이 상품 결합 시 주문 불가 VOC 분석. API 제약 조건 내 실패 유형 재정의 후 장바구니 내 즉시 안내하는 Fail-soft UX 설계. 개발팀과 실행 가능한 스펙으로 합의.</div>
-        <div class="other-result">→ 관련 CS 인입 주 2-3건 → 0건. 기술 제약 환경에서 PO·개발팀과 개선안 합의.</div>
-        <a class="other-link" href="https://www.notion.so/Case-3-Fail-soft-UX-22495f53ab8a814f99a3eceb6058c406" target="_blank">자세히 보기</a>
+      <div class="exp-item fi">
+        <div class="exp-period">2023.11 – 2024.12</div>
+        <div>
+          <div class="exp-company">카카오VX <span style="font-weight:400; color:var(--text-3); font-size:13px;">(파견)</span></div>
+          <div class="exp-role">플랫폼 고객만족 · CS 운영</div>
+          <div class="exp-points">
+            <div class="exp-point">제휴 골프장 400여 곳의 예약·취소·위약 기준을 구조화 → 공통 판단 기준 수립</div>
+            <div class="exp-point">복합 문의 처리 기준·FAQ 문서화 → 대응 일관성과 정확도 개선</div>
+            <div class="exp-point">VOC 분석 기반 정책 혼선 구간 식별 → 운영 가이드 재정비로 품질 편차 축소</div>
+          </div>
+        </div>
       </div>
-
-      <div class="other-card">
-        <div class="other-num">CASE 06</div>
-        <div class="other-title">CRM 상태값 라이프사이클 재설계 — 문의 누락 구조 제거</div>
-        <div class="other-desc">답변 저장 즉시 처리완료로 전환되는 구조로 추가 확인 필요 문의가 누락. 저장과 완료 분리, 중간 '처리중' 상태값 추가.</div>
-        <div class="other-result">→ 추가 확인 필요 문의 누락 0건. 처리 상태와 시스템 상태 불일치 해소.</div>
-        <a class="other-link" href="https://www.notion.so/Case-2-CRM-27295f53ab8a80dab4f2ed2a42039d74" target="_blank">자세히 보기</a>
+      <div class="exp-item fi">
+        <div class="exp-period">2004.03 – 2005.08</div>
+        <div>
+          <div class="exp-company">(주)호텔신라</div>
+          <div class="exp-role">마케팅(예약)</div>
+          <div class="exp-points">
+            <div class="exp-point">객실 예약 운영 및 데이터 정합성 관리</div>
+            <div class="exp-point">VIP 및 외국인 고객 응대, 유관부서 협업</div>
+          </div>
+        </div>
       </div>
-
-      <div class="other-card">
-        <div class="other-num">CASE 07</div>
-        <div class="other-title">리셀러·다계정 어뷰징 탐지 및 대응 기준 수립</div>
-        <div class="other-desc">주문 패턴 데이터 분석으로 어뷰징 의심 계정을 독립 탐지. 내부 판단 기준 구체화 → 차단·유지·해제 방향 협의 → 지속 모니터링 체계 수립.</div>
-        <div class="other-result">→ 재사용 가능한 판단 기준 문서화 · 모니터링 체계 구축 · 서비스 건전성 관리 기여.</div>
-        <span style="font-size:11px; color:var(--muted);">* 민감 정보 — 면접 시 상세 공유 가능</span>
-      </div>
-
-      <div class="other-card">
-        <div class="other-num">CASE 08</div>
-        <div class="other-title">민감 이슈 확산 방지 및 전사 커뮤니케이션 정렬</div>
-        <div class="other-desc">과거 품질 이슈가 기사로 재점화됨. 팩트·루머 분리, 질문 유형별 조건부 대응 로직 설계, CEO 승인 기반 전사 가이드 배포.</div>
-        <div class="other-result">→ 인지 후 1시간 내 매장·CS 전사 배포 완료.</div>
-        <a class="other-link" href="https://www.notion.so/Case-5-2ab95f53ab8a8033a3f7ed5984a24d1f" target="_blank">자세히 보기</a>
-      </div>
-
     </div>
   </div>
 </section>
 
-<footer>
-  오희은 &nbsp;·&nbsp; <a href="mailto:gldms1009@naver.com">gldms1009@naver.com</a> &nbsp;·&nbsp; 010-2357-2674
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ SKILLS ══ -->
+<section class="sec">
+  <div class="wrap">
+    <p class="sec-eyebrow">Skills &amp; Tools</p>
+    <h2 class="sec-title">역량 및 도구</h2>
+    <div class="skills-grid">
+      <div class="sk-group fi">
+        <div class="sk-title">AI · 자동화</div>
+        <div class="sk-list">
+          <div class="sk-item">Claude (계약서 분석 · 자동화 구현)</div>
+          <div class="sk-item">ChatGPT</div>
+          <div class="sk-item">Google NotebookLM (교차 검증)</div>
+          <div class="sk-item">Gemini (약관 분석)</div>
+          <div class="sk-item">Zapier (워크플로우 자동화)</div>
+          <div class="sk-item">Chrome Extension (Claude 활용 구현)</div>
+        </div>
+      </div>
+      <div class="sk-group fi">
+        <div class="sk-title">운영 · 기획</div>
+        <div class="sk-list">
+          <div class="sk-item">VOC 분석 · 서비스 구조 개선</div>
+          <div class="sk-item">Fail-soft UX 설계</div>
+          <div class="sk-item">CS 운영 기준 · Fallback 전략 설계</div>
+          <div class="sk-item">외부 파트너 협상 · 계약 분석</div>
+          <div class="sk-item">운영 지표 설계 및 관리</div>
+        </div>
+      </div>
+      <div class="sk-group fi">
+        <div class="sk-title">도구 · 협업</div>
+        <div class="sk-list">
+          <div class="sk-item">Notion (케이스 문서화)</div>
+          <div class="sk-item">Google Sheets · Apps Script</div>
+          <div class="sk-item">VBA (업무 자동화)</div>
+          <div class="sk-item">Slack</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER / CONTACT ══ -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-name">오희은</div>
+        <div class="footer-sub">서비스 기획 · 운영 매니저</div>
+        <div class="footer-sub" style="margin-top:4px;">gldms1009@naver.com &nbsp;·&nbsp; 010-2357-2674</div>
+      </div>
+      <div class="footer-actions">
+        <a href="mailto:gldms1009@naver.com" class="btn btn-dark">
+          이메일 보내기
+        </a>
+      </div>
+    </div>
+  </div>
 </footer>
+
+<script>
+  // Header shadow on scroll
+  const hd = document.getElementById('hd');
+  window.addEventListener('scroll', () => {
+    hd.classList.toggle('on', window.scrollY > 8);
+  }, { passive: true });
+
+  // Fade-in on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('show');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fi').forEach(el => io.observe(el));
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navEl = document.getElementById('nav');
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('open');
+    navEl.classList.toggle('open');
+  });
+
+  // Smooth nav click
+  document.querySelectorAll('nav a, .btn[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        navToggle.classList.remove('open');
+        navEl.classList.remove('open');
+      }
+    });
+  });
+</script>
 
 </body>
 </html>
