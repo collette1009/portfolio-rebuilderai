@@ -301,45 +301,7 @@
       background: var(--charcoal-a);
       padding: 2px 10px; border-radius: 6px;
     }
-    .c-metric-lab { font-size: 11px; color: var(--text-3); }
-    .c-arrow {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 1.5px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      color: var(--charcoal); flex-shrink: 0;
-      transition: background var(--t), border-color var(--t), transform var(--t);
-    }
-    .c-card:hover .c-arrow {
-      background: var(--charcoal); border-color: var(--charcoal); color: var(--white);
-      transform: translateX(3px);
-    }
-
-    /* ─── EXPERIENCE ─── */
-    .exp-list { display: flex; flex-direction: column; gap: 0; }
-    .exp-item {
-      display: grid; grid-template-columns: 180px 1fr;
-      gap: 32px; padding: 32px 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .exp-item:last-child { border-bottom: none; }
-    .exp-period { font-size: 13px; color: var(--text-3); padding-top: 3px; }
-    .exp-company {
-      font-size: 16px; font-weight: 700; color: var(--text-1);
-      letter-spacing: -0.01em; margin-bottom: 4px;
-    }
-    .exp-role {
-      font-size: 14px; color: var(--text-2); margin-bottom: 14px;
-    }
-    .exp-points { display: flex; flex-direction: column; gap: 7px; }
-    .exp-point {
-      display: flex; align-items: flex-start; gap: 10px;
-      font-size: 14px; color: var(--text-2); line-height: 1.65;
-    }
-    .exp-point::before {
-      content: '';
-      width: 4px; height: 4px; border-radius: 50%;
-      background: var(--charcoal); flex-shrink: 0;
-      margin-top: 9px;
+    .c-m;
     }
 
     /* ─── SKILLS ─── */
@@ -510,7 +472,7 @@
     <div class="hero-tagline">
       <p>
         고객의 목소리를 서비스 구조로 바꿉니다 —<br>
-        <strong>VOC를 읽고, 기획으로 정의하고, 직접 실행합니다.</strong>
+        <strong>VOC를 읽고, 기획으로 정의하고, 팀이 실행하게 만듭니다.</strong>
       </p>
     </div>
 
@@ -555,8 +517,11 @@
             공식 승인받아 <strong>생성형 AI를 실무 파트너로 직접 운용</strong>해왔습니다.
           </p>
           <p>
-            리빌더AI의 어카운트 매니저로서, 고객사의 니즈를 서비스 개선으로 연결하고
-            AI 솔루션이 실제 현장에서 작동하도록 만드는 역할을 하고 싶습니다.
+            2025년 회생 개시 후 운영팀이 전원 이탈한 상황에서, 타 부서 전환 인원 6명의
+            온보딩과 운영 기준 정립을 전담하며 운영 공백 없이 연속성을 유지했습니다.
+            AI 솔루션이 현장에서 제대로 작동하려면 운영 기준이 먼저입니다.
+            <strong>구조가 없는 곳에서 기준을 만들고, 팀이 없어진 자리에서 연속성을
+            이어온 경험</strong>이 — 리빌더AI 어카운트 매니저 역할에 그대로 연결됩니다.
           </p>
         </div>
         <div class="about-chips fi">
@@ -564,6 +529,7 @@
           <span class="chip">B2B 고객 소통</span>
           <span class="chip">생성형 AI 실무 활용</span>
           <span class="chip">서비스 기획 · 운영</span>
+          <span class="chip">크로스팀 온보딩 · 리드</span>
           <span class="chip">Fail-soft UX 설계</span>
           <span class="chip">자동화 직접 구현</span>
         </div>
@@ -609,6 +575,7 @@
         </div>
       </div>
     </div>
+  </div>
 </section>
 
 <div class="wrap"><div class="hr"></div></div>
@@ -749,7 +716,7 @@
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-          </div>
+           </div>
         </div>
       </a>
 
@@ -835,8 +802,9 @@
         <div class="exp-period">2024.12 – 현재</div>
         <div>
           <div class="exp-company">초록마을</div>
-          <div class="exp-role">CS운영 (운영·기획 병행)</div>
+          <div class="exp-role">CS운영 (운영·기획 병행 · 타팀 인력 온보딩 리드)</div>
           <div class="exp-points">
+            <div class="exp-point">회생 개시 후 운영팀 전원 이탈 — 유일한 잔류 인원으로 디자인·콘텐츠기획 타 부서 전환 인원 6명 온보딩 전담, 처리 기준·판단 가이드 직접 작성·교육, 운영 공백 없이 연속성 유지</div>
             <div class="exp-point">택배 표준약관 Gemini 검토 → 배송사 협상, 배상 회수율 14.7배 개선 / 물류 계약서 Claude·NotebookLM 분석 → 월 1,900만 원 차감 구조 확보</div>
             <div class="exp-point">VOC 분류·분석으로 장바구니 결합 오류 구조 파악 → Fail-soft UX 설계 → 관련 문의 주 2-3건→0건으로 해소</div>
             <div class="exp-point">Chrome Extension·VBA로 반복 운영 프로세스 직접 자동화 — 8단계에서 2단계로 축소</div>
