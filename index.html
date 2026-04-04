@@ -301,7 +301,45 @@
       background: var(--charcoal-a);
       padding: 2px 10px; border-radius: 6px;
     }
-    .c-m;
+    .c-metric-lab { font-size: 11px; color: var(--text-3); }
+    .c-arrow {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--charcoal); flex-shrink: 0;
+      transition: background var(--t), border-color var(--t), transform var(--t);
+    }
+    .c-card:hover .c-arrow {
+      background: var(--charcoal); border-color: var(--charcoal); color: var(--white);
+      transform: translateX(3px);
+    }
+
+    /* ─── EXPERIENCE ─── */
+    .exp-list { display: flex; flex-direction: column; gap: 0; }
+    .exp-item {
+      display: grid; grid-template-columns: 180px 1fr;
+      gap: 32px; padding: 32px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .exp-item:last-child { border-bottom: none; }
+    .exp-period { font-size: 13px; color: var(--text-3); padding-top: 3px; }
+    .exp-company {
+      font-size: 16px; font-weight: 700; color: var(--text-1);
+      letter-spacing: -0.01em; margin-bottom: 4px;
+    }
+    .exp-role {
+      font-size: 14px; color: var(--text-2); margin-bottom: 14px;
+    }
+    .exp-points { display: flex; flex-direction: column; gap: 7px; }
+    .exp-point {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 14px; color: var(--text-2); line-height: 1.65;
+    }
+    .exp-point::before {
+      content: '';
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--charcoal); flex-shrink: 0;
+      margin-top: 9px;
     }
 
     /* ─── SKILLS ─── */
@@ -518,7 +556,7 @@
           </p>
           <p>
             2025년 회생 개시 후 운영팀이 전원 이탈한 상황에서, 타 부서 전환 인원 6명의
-            온보딩과 운영 기준 정립을 전담하며 운영 공백 없이 연속성을 유지했습니다.
+            온보딩과 운영 기준 정립을 전담하며 운영 공�� 없이 연속성을 유지했습니다.
             AI 솔루션이 현장에서 제대로 작동하려면 운영 기준이 먼저입니다.
             <strong>구조가 없는 곳에서 기준을 만들고, 팀이 없어진 자리에서 연속성을
             이어온 경험</strong>이 — 리빌더AI 어카운트 매니저 역할에 그대로 연결됩니다.
@@ -560,7 +598,7 @@
             </div>
             <span class="sidebar-card-label">VOC → 서비스 개선 연결</span>
           </div>
-          <p class="sidebar-card-desc">VOC 173건 전수 분석 → 서비스 로직 빈틈 정의 → 개발팀 협업 → 운영 구조 개선. 고객 목소리를 제품 변화로 연결</p>
+          <p class="sidebar-card-desc">VOC 173건 전수 분석 → 서비스 로직 빈틈 정의 → 개발팀 협업 → 운영 구조 개선. 고객타혀와 목소리를 제품 변화로 연결</p>
         </div>
         <div class="sidebar-card fi">
           <div class="sidebar-card-top">
@@ -630,12 +668,12 @@
             <span class="jd-kw">서비스 기획</span>
           </div>
         </div>
-        <div class="jd-right">
+        <div class="jjd-right">
           <div class="jd-match-label">My Experience</div>
-          <div class="jd-match-title">VOC → 서비스 구조 개선으로 직결</div>
+          <div class="jd-match-title">VOC → 서비스 구조 개선윸로 직결</div>
           <div class="jd-match-points">
-            <div class="jd-match-point">VOC 173건 전수 분석 → 장바구니 결합 오류 구조 정의 → Fail-soft UX 기획 → 주 2–3건 문의 0건으로 해소</div>
-            <div class="jd-match-point">환불·교환 자유 텍스트를 구조화된 입력 필드로 재설계 → AS 재확인 왕복 95%↓</div>
+            <div class="jd-match-point">VOC 173건 ���수 분석 → 장바구니 결합 오류 구조 정의 → Fail-soft UX 기획 → 죴 �숣3건→0건으로 해소</div>
+            <div class="jd-match-point">환붂·교환 자유 텍스트를 구조화된 잕정정가 → AS 재확인 왕복 95%↓</div>
             <div class="jd-match-point">고객 의도를 서비스 스펙 언어로 번역해 개발팀과 합의·반영</div>
           </div>
         </div>
@@ -698,25 +736,25 @@
     <h2 class="sec-title">실제로 해결한 문제들</h2>
     <div class="cases-grid">
 
-      <!-- Card 1: 8→2단계 자동화 (Case 3) -->
-      <a class="c-card fi" href="case3.html">
+      <!-- Card 1: 환불·교환 입력 구조 재설계 (Case 5) -->
+      <a class="c-card fi" href="case5.html">
         <div class="c-tags">
-          <span class="c-tag">생성형 AI 기획</span>
-          <span class="c-tag">워크플로우 자동화</span>
-          <span class="c-tag">직접 구현</span>
+          <span class="c-tag">고객 니즈 구조화</span>
+          <span class="c-tag">서비스 기획</span>
+          <span class="c-tag">유관부서 협업</span>
         </div>
-        <h3 class="c-title">반복 운영 프로세스 8→2단계 자동화</h3>
-        <p class="c-desc">Chrome Extension·VBA·Apps Script를 활용해 반복 운영 업무를 직접 자동화했습니다. 수동 8단계를 2단계로 축소하며 운영 생산성과 정합성을 동시에 높였습니다.</p>
+        <h3 class="c-title">고객 의도 기반 환불·교환 입력 구조 재설계</h3>
+        <p class="c-desc">자유 텍스트에 묻혀 있던 고객 의도를 필수 선택값으로 구조화해, AS 재확인 왕복을 95% 이상 없앴습니다. 중복 필드를 활용하는 스펙을 직접 설계해 개발 범위를 최소화하고 빠르게 반영했습니다.</p>
         <div class="c-bottom">
           <div class="c-metric">
-            <span class="c-metric-val">8→2단계</span>
-            <span class="c-metric-lab">프로세스 축소</span>
+            <span class="c-metric-val">왕복 95%+</span>
+            <span class="c-metric-lab">AS 재확인 감소</span>
           </div>
           <div class="c-arrow">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
               <path d="M2.5 7H11.5M8 3.5L11.5 7L8 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
-           </div>
+          </div>
         </div>
       </a>
 
@@ -764,19 +802,19 @@
         </div>
       </a>
 
-      <!-- Card 4: 환불·교환 입력 구조 재설계 (Case 5) -->
-      <a class="c-card fi" href="case5.html">
+      <!-- Card 4: 8→2단계 자동화 (Case 3) -->
+      <a class="c-card fi" href="case3.html">
         <div class="c-tags">
-          <span class="c-tag">고객 니즈 구조화</span>
-          <span class="c-tag">서비스 기획</span>
-          <span class="c-tag">운영 효율화</span>
+          <span class="c-tag">생성형 AI 기획</span>
+          <span class="c-tag">워크플로우 자동화</span>
+          <span class="c-tag">직접 구현</span>
         </div>
-        <h3 class="c-title">고객 의도 기반 환불·교환 입력 구조 재설계</h3>
-        <p class="c-desc">자유 텍스트에 묻혀 있던 고객 의도를 필수 선택값으로 구조화해, AS 재확인 왕복을 95% 이상 없앴습니다. 중복 필드를 활용하는 스펙을 직접 설계해 개발 범위를 최소화하고 빠르게 반영했습니다.</p>
+        <h3 class="c-title">반복 운영 프로세스 8→2단계 자동화</h3>
+        <p class="c-desc">Chrome Extension·VBA·Apps Script를 활용해 반복 운영 업무를 직접 자동화했습니다. 수동 8단계를 2단계로 축소하며 운영 생산성과 정합성을 동시에 높였습니다.</p>
         <div class="c-bottom">
           <div class="c-metric">
-            <span class="c-metric-val">왕복 95%+</span>
-            <span class="c-metric-lab">AS 재확인 감소</span>
+            <span class="c-metric-val">8→2단계</span>
+            <span class="c-metric-lab">프로세스 축소</span>
           </div>
           <div class="c-arrow">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
