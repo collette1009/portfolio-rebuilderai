@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>오희은 | 서비스 기획·운영 매니저</title>
-  <meta name="description" content="AI와 자동화를 활용해 서비스 운영 구조를 직접 설계하는 기획자">
+  <title>오희은 | 어카운트 매니저 (서비스 리드) — 리빌더AI 지원</title>
+  <meta name="description" content="고객 VOC를 서비스 구조로 바꾸는 어카운트 매니저. B2B SaaS 운영·기획, 생성형 AI 실무 활용, 고객 소통 구조 설계 경험">
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
   <style>
@@ -13,7 +13,7 @@
     :root {
       --white:        #FFFFFF;
       --bg-soft:      #F7F7F8;
-      --bg-card:      #F3F3F4;h
+      --bg-card:      #F3F3F4;
       --border:       #E5E5E6;
       --border-hover: #282D32;
       --text-1:       #141416;
@@ -274,7 +274,7 @@
       box-shadow: var(--sh-md); transform: translateY(-3px);
       border-color: var(--charcoal);
     }
-    .c-tags { display: flex; gap: 7pz; flex-wrap: wrap; }
+    .c-tags { display: flex; gap: 7px; flex-wrap: wrap; }
     .c-tag {
       font-size: 11px; font-weight: 600;
       color: var(--charcoal); background: var(--charcoal-a);
@@ -367,6 +367,70 @@
       background: var(--charcoal); flex-shrink: 0;
     }
 
+    /* ─── JD MATCH ─── */
+    .jd-grid {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .jd-item {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0; border: 1.5px solid var(--border);
+      border-radius: var(--r); overflow: hidden;
+      transition: border-color var(--t) var(--ease), box-shadow var(--t) var(--ease);
+    }
+    .jd-item:hover {
+      border-color: var(--border-hover);
+      box-shadow: var(--sh-md);
+    }
+    .jd-left {
+      background: var(--charcoal); color: var(--white);
+      padding: 28px 32px; display: flex; flex-direction: column; gap: 10px;
+    }
+    .jd-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.45);
+    }
+    .jd-req {
+      font-size: 15px; font-weight: 600; line-height: 1.55;
+      color: var(--white);
+    }
+    .jd-keyword-row {
+      display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px;
+    }
+    .jd-kw {
+      font-size: 11px; font-weight: 600;
+      background: rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.75);
+      padding: 3px 9px; border-radius: 20px;
+      letter-spacing: 0.02em;
+    }
+    .jd-right {
+      background: var(--white); padding: 28px 32px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .jd-match-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-3);
+    }
+    .jd-match-title {
+      font-size: 14px; font-weight: 700; color: var(--text-1);
+      line-height: 1.5;
+    }
+    .jd-match-points {
+      display: flex; flex-direction: column; gap: 8px; margin-top: 4px;
+    }
+    .jd-match-point {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13px; color: var(--text-2); line-height: 1.6;
+    }
+    .jd-match-point::before {
+      content: '';
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--charcoal); flex-shrink: 0; margin-top: 8px;
+    }
+    @media (max-width: 680px) {
+      .jd-item { grid-template-columns: 1fr; }
+    }
+
     /* ─── FOOTER ─── */
     footer {
       padding: 60px 0;
@@ -421,6 +485,7 @@
     <a href="#" class="logo">오희은</a>
     <nav id="nav">
       <a href="#about">소개</a>
+      <a href="#jdmatch">JD Match</a>
       <a href="#cases">케이스 스터디</a>
       <a href="#exp">경력</a>
       <a href="#contact">연락하기</a>
@@ -436,16 +501,16 @@
   <div class="wrap">
     <div class="hero-eyebrow">
       <span class="hero-eyebrow-dot"></span>
-      Service Planning &amp; Operations
+      Account Manager · Service Lead
     </div>
 
     <h1 class="hero-name">오희은</h1>
-    <p class="hero-role">서비스 기획 · 운영 매니저</p>
+    <p class="hero-role">어카운트 매니저 (서비스 리드)</p>
 
     <div class="hero-tagline">
       <p>
-        AI 서비스가 상상에서 멈추지 않도록 —<br>
-        <strong>데이터를 읽고, 구조를 설계하고, 직접 실행합니다.</strong>
+        고객의 목소리를 서비스 구조로 바꿉니다 —<br>
+        <strong>VOC를 읽고, 기획으로 정의하고, 직접 실행합니다.</strong>
       </p>
     </div>
 
@@ -473,34 +538,34 @@
 <section class="sec" id="about">
   <div class="wrap">
     <p class="sec-eyebrow">About</p>
-    <h2 class="sec-title">반복되는 문제 안에서<br>구조적 원인을 찾습니다</h2>
+    <h2 class="sec-title">고객의 목소리를<br>서비스 구조로 바꿉니다</h2>
 
     <div class="about-grid">
       <div>
         <div class="about-text fi">
           <p>
-            서비스 운영 현장에서 <strong>같은 문제가 반복되는 이유를 데이터로 파고들었습니다.</strong>
-            VOC를 분류하고, 서비스 로직의 빈틈을 정의하고,
-            실행 가능한 해결 구조를 직접 만들었습니다.
+            <strong>고객 VOC를 데이터로 분류하고, 서비스 로직의 빈틈을 정의하고,
+            실행 가능한 구조를 직접 설계했습니다.</strong>
+            B2B 파트너 협상부터 이커머스 운영까지 — 고객 니즈가 제품에 반영되는
+            전 과정을 기획 언어로 번역해왔습니다.
           </p>
           <p>
             Claude·NotebookLM·GPT를 실무에 직접 접합해 재배송 자동화, 계약서 분석,
-            운영 기준 설계까지 — 비개발 직군 중 유일하게 AI 도구 비용을 업무비로 공식 승인받아
-            <strong>AI를 실무 파트너로 사용</strong>해왔습니다.
+            운영 기준 설계까지 처리했습니다. 비개발 직군 중 유일하게 AI 도구 비용을 업무비로
+            공식 승인받아 <strong>생성형 AI를 실무 파트너로 직접 운용</strong>해왔습니다.
           </p>
           <p>
-            AI 서비스가 고객에게 실제로 작동하려면,
-            도구만큼이나 그 도구를 둘러싼 운영 구조가 중요합니다.
-            그 구조를 설계하는 역할을 하고 싶습니다.
+            리빌더AI의 어카운트 매니저로서, 고객사의 니즈를 서비스 개선으로 연결하고
+            AI 솔루션이 실제 현장에서 작동하도록 만드는 역할을 하고 싶습니다.
           </p>
         </div>
         <div class="about-chips fi">
-          <span class="chip">VOC 분석</span>
-          <span class="chip">운영 구조 설계</span>
-          <span class="chip">AI 실무 적용</span>
-          <span class="chip">자동화 직접 구현</span>
+          <span class="chip">VOC 분석 · 구조화</span>
+          <span class="chip">B2B 고객 소통</span>
+          <span class="chip">생성형 AI 실무 활용</span>
+          <span class="chip">서비스 기획 · 운영</span>
           <span class="chip">Fail-soft UX 설계</span>
-          <span class="chip">운영 Fallback 전략</span>
+          <span class="chip">자동화 직접 구현</span>
         </div>
       </div>
 
@@ -517,7 +582,7 @@
             </div>
             <span class="sidebar-card-label">AI 실무 적용</span>
           </div>
-          <p class="sidebar-card-desc">비개발 직군 중 유일하게 Claude·GPT 비용을 업무비로 공식 승인받아 재배송 자동화·계약서 분석·VOC 개선에 직접 활용</p>
+          <p class="sidebar-card-desc">비개발 직군 중 유일하게 Claude·GPT 비용을 업무비로 공식 승인 — 생성형 AI를 재배송 자동화·계약 분석·VOC 개선에 직접 적용</p>
         </div>
         <div class="sidebar-card fi">
           <div class="sidebar-card-top">
@@ -527,9 +592,9 @@
                 <path d="M7 4V7L9 9" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
               </svg>
             </div>
-            <span class="sidebar-card-label">데이터 기반 의사결정</span>
+            <span class="sidebar-card-label">VOC → 서비스 개선 연결</span>
           </div>
-          <p class="sidebar-card-desc">VOC 173건 전수 분석 → 행동 시점 검증 로직 설계 → 이커머스 리드 제안 → 운영 fallback 전략 수립</p>
+          <p class="sidebar-card-desc">VOC 173건 전수 분석 → 서비스 로직 빈틈 정의 → 개발팀 협업 → 운영 구조 개선. 고객 목소리를 제품 변화로 연결</p>
         </div>
         <div class="sidebar-card fi">
           <div class="sidebar-card-top">
@@ -538,13 +603,12 @@
                 <path d="M2 4L7 2L12 4V8C12 10.5 7 13 7 13C7 13 2 10.5 2 8V4Z" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
               </svg>
             </div>
-            <span class="sidebar-card-label">직접 구현하는 운영 설계</span>
+            <span class="sidebar-card-label">B2B 파트너 협상 · 기획</span>
           </div>
-          <p class="sidebar-card-desc">Chrome Extension·VBA·Apps Script로 반복 업무를 8단계에서 2단계로 축소. 아이디어를 직접 실행으로 연결</p>
+          <p class="sidebar-card-desc">물류 계약서 AI 분석 → 배송사 협상 → 월 1,900만 원 차감 구조 설계. 고객사 니즈를 계약 구조로 실현</p>
         </div>
       </div>
     </div>
-  </div>
 </section>
 
 <div class="wrap"><div class="hr"></div></div>
@@ -581,6 +645,85 @@
 
 <div class="wrap"><div class="hr"></div></div>
 
+<!-- ══ JD MATCH ══ -->
+<section class="sec" id="jdmatch">
+  <div class="wrap">
+    <p class="sec-eyebrow">JD Match</p>
+    <h2 class="sec-title">리빌더AI가 찾는 역할,<br>제가 해온 일</h2>
+    <div class="jd-grid">
+
+      <!-- JD 01 -->
+      <div class="jd-item fi">
+        <div class="jd-left">
+          <div class="jd-num">JD 01</div>
+          <div class="jd-req">고객 소통 · 서비스 기획 · 니즈 분석</div>
+          <div class="jd-keyword-row">
+            <span class="jd-kw">고객 인터뷰</span>
+            <span class="jd-kw">니즈 분석</span>
+            <span class="jd-kw">서비스 기획</span>
+          </div>
+        </div>
+        <div class="jd-right">
+          <div class="jd-match-label">My Experience</div>
+          <div class="jd-match-title">VOC → 서비스 구조 개선으로 직결</div>
+          <div class="jd-match-points">
+            <div class="jd-match-point">VOC 173건 전수 분석 → 장바구니 결합 오류 구조 정의 → Fail-soft UX 기획 → 주 2–3건 문의 0건으로 해소</div>
+            <div class="jd-match-point">환불·교환 자유 텍스트를 구조화된 입력 필드로 재설계 → AS 재확인 왕복 95%↓</div>
+            <div class="jd-match-point">고객 의도를 서비스 스펙 언어로 번역해 개발팀과 합의·반영</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JD 02 -->
+      <div class="jd-item fi">
+        <div class="jd-left">
+          <div class="jd-num">JD 02</div>
+          <div class="jd-req">VOC 기반 프로덕트 가치 향상</div>
+          <div class="jd-keyword-row">
+            <span class="jd-kw">VOC 수집·분석</span>
+            <span class="jd-kw">개발팀 협업</span>
+            <span class="jd-kw">프로덕트 개선</span>
+          </div>
+        </div>
+        <div class="jd-right">
+          <div class="jd-match-label">My Experience</div>
+          <div class="jd-match-title">데이터에서 개선 구조까지 직접 설계</div>
+          <div class="jd-match-points">
+            <div class="jd-match-point">택배 표준약관 AI 검토 → 배송사 협상 → 배상 회수율 14.7배↑, 월 1,900만 원 차감 구조 확보</div>
+            <div class="jd-match-point">고객 불만 데이터 기반 운영 기준 수립 → 정책 혼선 구간 제거 → 서비스 품질 편차 축소</div>
+            <div class="jd-match-point">고객 의사결정 흐름 분석 → 서비스 로직 개선안 이커머스 팀 제안·합의</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JD 03 -->
+      <div class="jd-item fi">
+        <div class="jd-left">
+          <div class="jd-num">JD 03</div>
+          <div class="jd-req">생성형 AI 기획 · 개발 지식 보유</div>
+          <div class="jd-keyword-row">
+            <span class="jd-kw">생성형 AI 활용</span>
+            <span class="jd-kw">AI 기획</span>
+            <span class="jd-kw">개발 협업</span>
+          </div>
+        </div>
+        <div class="jd-right">
+          <div class="jd-match-label">My Experience</div>
+          <div class="jd-match-title">AI 도구를 실무 파트너로 직접 운용</div>
+          <div class="jd-match-points">
+            <div class="jd-match-point">비개발 직군 중 유일하게 Claude·GPT 업무비 공식 승인 — 생성형 AI를 계약 분석·자동화·VOC 개선에 직접 적용</div>
+            <div class="jd-match-point">Chrome Extension 직접 구현 (Claude 활용) → 재배송 8단계 → 2단계, 1,151건 처리</div>
+            <div class="jd-match-point">AI 솔루션의 운영 한계와 가능성을 실무 경험으로 이해 — 고객사에 현실적인 가이드 제공 가능</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
 <!-- ══ CASES ══ -->
 <section class="sec" id="cases">
   <div class="wrap">
@@ -589,8 +732,9 @@
     <div class="cases-grid">
 
       <!-- Card 1: 8→2단계 자동화 (Case 3) -->
-      <a class="c-card fi" href="https://www.notion.so/31795f53ab8a802d83f9effd47edcca5" target="_blank" rel="noopener">
+      <a class="c-card fi" href="case3.html">
         <div class="c-tags">
+          <span class="c-tag">생성형 AI 기획</span>
           <span class="c-tag">워크플로우 자동화</span>
           <span class="c-tag">직접 구현</span>
         </div>
@@ -610,9 +754,10 @@
       </a>
 
       <!-- Card 2: Fail-soft UX (Case 2) -->
-      <a class="c-card fi" href="https://www.notion.so/22495f53ab8a814f99a3eceb6058c406" target="_blank" rel="noopener">
+      <a class="c-card fi" href="case2.html">
         <div class="c-tags">
-          <span class="c-tag">VOC 분석</span>
+          <span class="c-tag">VOC → 프로덕트 개선</span>
+          <span class="c-tag">고객 소통</span>
           <span class="c-tag">UX 설계</span>
         </div>
         <h3 class="c-title">장바구니 결합 오류 Fail-soft UX 설계</h3>
@@ -631,9 +776,10 @@
       </a>
 
       <!-- Card 3: 파트너 손실 책임구조 재정의 (Case 1) -->
-      <a class="c-card fi" href="https://www.notion.so/32395f53ab8a800d9403d826419f8c1e" target="_blank" rel="noopener">
+      <a class="c-card fi" href="case1.html">
         <div class="c-tags">
-          <span class="c-tag">파트너 협의</span>
+          <span class="c-tag">B2B 파트너 협상</span>
+          <span class="c-tag">AI 계약 분석</span>
           <span class="c-tag">운영 구조 설계</span>
         </div>
         <h3 class="c-title">파트너 손실 책임구조 재정의 및 배상 기준 수립</h3>
@@ -652,9 +798,10 @@
       </a>
 
       <!-- Card 4: 환불·교환 입력 구조 재설계 (Case 5) -->
-      <a class="c-card fi" href="https://www.notion.so/2b395f53ab8a80b1b605d2b053b459fe" target="_blank" rel="noopener">
+      <a class="c-card fi" href="case5.html">
         <div class="c-tags">
-          <span class="c-tag">입력 구조 설계</span>
+          <span class="c-tag">고객 니즈 구조화</span>
+          <span class="c-tag">서비스 기획</span>
           <span class="c-tag">운영 효율화</span>
         </div>
         <h3 class="c-title">고객 의도 기반 환불·교환 입력 구조 재설계</h3>
@@ -688,7 +835,7 @@
         <div class="exp-period">2024.12 – 현재</div>
         <div>
           <div class="exp-company">초록마을</div>
-          <div class="exp-role">서비스 기획 · 운영</div>
+          <div class="exp-role">CS운영 (운영·기획 병행)</div>
           <div class="exp-points">
             <div class="exp-point">택배 표준약관 Gemini 검토 → 배송사 협상, 배상 회수율 14.7배 개선 / 물류 계약서 Claude·NotebookLM 분석 → 월 1,900만 원 차감 구조 확보</div>
             <div class="exp-point">VOC 분류·분석으로 장바구니 결합 오류 구조 파악 → Fail-soft UX 설계 → 관련 문의 주 2-3건→0건으로 해소</div>
@@ -772,7 +919,7 @@
     <div class="footer-grid">
       <div>
         <div class="footer-name">오희은</div>
-        <div class="footer-sub">서비스 기획 · 운영 매니저</div>
+        <div class="footer-sub">어카운트 매니저 (서비스 리드) 지원 — 리빌더AI</div>
         <div class="footer-sub" style="margin-top:4px;">gldms1009@naver.com &nbsp;·&nbsp; 010-2357-2674</div>
       </div>
       <div class="footer-actions">
