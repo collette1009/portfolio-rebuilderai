@@ -3,553 +3,291 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Case 5 · 고객 의도 기반 환불·교환 입력 구조 재설계 | 오희은</title>
-  <meta name="description" content="자유 텍스트에 묻혀 있던 고객 의도를 선택값으로 구조화해, AS 재확인 왕복을 95% 이상 없앤 사례">
+  <title>Case 5. 고객 의도 기반 환불·교환 흐름 개선 및 입력 구조 재설계 | 오희은 포트폴리오</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --white:        #FFFFFF;
-      --bg-soft:      #F7F7F8;
-      --bg-card:      #F3F3F4;
-      --border:       #E5E5E6;
-      --border-hover: #282D32;
-      --text-1:       #141416;
-      --text-2:       #50505A;
-      --text-3:       #909098;
-      --charcoal:     #282D32;
-      --charcoal-2:   #1A1E21;
-      --charcoal-a:   rgba(40,45,50,0.07);
-      --sh-sm:        0 1px 4px rgba(0,0,0,0.06);
-      --sh-md:        0 4px 20px rgba(0,0,0,0.09);
-      --sh-lg:        0 12px 40px rgba(0,0,0,0.12);
-      --r:            10px;
-      --r-sm:         6px;
-      --ease:         cubic-bezier(.4,0,.2,1);
-      --t:            0.22s;
+      --white: #FFFFFF; --bg-soft: #F7F7F8; --bg-card: #F3F3F4;
+      --border: #E5E5E6; --text-1: #141416; --text-2: #50505A; --text-3: #909098;
+      --charcoal: #282D32; --charcoal-2: #1A1E21; --charcoal-a: rgba(40,45,50,0.07);
+      --sh-md: 0 4px 20px rgba(0,0,0,0.09); --r: 10px; --r-sm: 6px;
+      --ease: cubic-bezier(.4,0,.2,1); --t: 0.22s;
     }
-
     html { scroll-behavior: smooth; font-size: 16px; }
-
-    body {
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-      color: var(--text-1);
-      background: var(--white);
-      -webkit-font-smoothing: antialiased;
-      line-height: 1.7;
-    }
-
-    /* ─── LAYOUT ─── */
-    .wrap {
-      max-width: 980px;
-      margin: 0 auto;
-      padding: 0 28px;
-    }
+    body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-1); background: var(--white); -webkit-font-smoothing: antialiased; line-height: 1.7; }
+    .wrap { max-width: 980px; margin: 0 auto; padding: 0 28px; }
     .hr { width: 100%; height: 1px; background: var(--border); }
-
-    /* ─── HEADER ─── */
-    header {
-      position: sticky; top: 0; z-index: 200;
-      background: rgba(255,255,255,0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid transparent;
-      transition: border-color var(--t) var(--ease);
-    }
+    header { position: sticky; top: 0; z-index: 200; background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid transparent; transition: border-color var(--t) var(--ease); }
     header.on { border-bottom-color: var(--border); }
-    .h-inner {
-      max-width: 980px; margin: 0 auto; padding: 0 28px;
-      height: 62px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .logo {
-      font-size: 16px; font-weight: 800;
-      color: var(--charcoal); text-decoration: none;
-      letter-spacing: -0.02em;
-    }
+    .h-inner { max-width: 980px; margin: 0 auto; padding: 0 28px; height: 62px; display: flex; align-items: center; justify-content: space-between; }
+    .logo { font-size: 16px; font-weight: 800; color: var(--charcoal); text-decoration: none; letter-spacing: -0.02em; }
     nav { display: flex; gap: 30px; }
-    nav a {
-      font-size: 14px; font-weight: 500;
-      color: var(--text-2); text-decoration: none;
-      transition: color var(--t);
-    }
+    nav a { font-size: 14px; font-weight: 500; color: var(--text-2); text-decoration: none; transition: color var(--t); }
     nav a:hover { color: var(--charcoal); }
-
-    /* ─── MOBILE NAV ─── */
-    .nav-toggle {
-      display: none; width: 36px; height: 36px;
-      border: none; background: none; cursor: pointer;
-      flex-direction: column; align-items: center; justify-content: center; gap: 5px;
-    }
-    .nav-toggle span {
-      display: block; width: 20px; height: 2px;
-      background: var(--charcoal); border-radius: 2px;
-      transition: transform var(--t) var(--ease), opacity var(--t);
-    }
+    .nav-toggle { display: none; width: 36px; height: 36px; border: none; background: none; cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+    .nav-toggle span { display: block; width: 20px; height: 2px; background: var(--charcoal); border-radius: 2px; transition: transform var(--t) var(--ease), opacity var(--t); }
     .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
     .nav-toggle.open span:nth-child(2) { opacity: 0; }
     .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
     @media (max-width: 800px) {
       .nav-toggle { display: flex; }
-      nav {
-        display: none; position: absolute; top: 62px; left: 0; right: 0;
-        background: rgba(255,255,255,0.96);
-        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-        flex-direction: column; gap: 0;
-        border-bottom: 1px solid var(--border);
-        padding: 8px 0;
-      }
+      nav { display: none; position: absolute; top: 62px; left: 0; right: 0; background: rgba(255,255,255,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); flex-direction: column; gap: 0; border-bottom: 1px solid var(--border); padding: 8px 0; }
       nav.open { display: flex; }
       nav a { padding: 14px 28px; font-size: 15px; }
       nav a:hover { background: var(--bg-soft); }
     }
-
-    /* ─── CASE HEADER ─── */
-    .case-header {
-      padding: 56px 0 44px;
-    }
-    .case-back {
-      display: inline-flex; align-items: center; gap: 6px;
-      font-size: 14px; font-weight: 500;
-      color: var(--text-2); text-decoration: none;
-      margin-bottom: 32px;
-      transition: color var(--t);
-    }
-    .case-back:hover { color: var(--charcoal); }
-    .case-title {
-      font-size: clamp(28px, 5vw, 42px);
-      font-weight: 800; letter-spacing: -0.03em;
-      color: var(--charcoal); line-height: 1.2;
-      margin-bottom: 24px;
-    }
-    .case-summary {
-      font-size: clamp(15px, 1.8vw, 17px);
-      color: var(--text-2); line-height: 1.85;
-      max-width: 760px;
-    }
-
-    /* ─── SECTION ─── */
+    .case-hero { padding: 72px 0 56px; border-bottom: 1px solid var(--border); }
+    .case-hero-nav { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); text-decoration: none; margin-bottom: 32px; transition: color var(--t); }
+    .case-hero-nav:hover { color: var(--charcoal); }
+    .case-hero-nav svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .case-hero-title { font-size: clamp(26px, 4vw, 36px); font-weight: 800; letter-spacing: -0.03em; color: var(--charcoal); line-height: 1.2; margin-bottom: 20px; max-width: 720px; }
+    .case-hero-summary { font-size: 16px; color: var(--text-2); line-height: 1.85; max-width: 720px; padding: 20px 24px; background: var(--bg-soft); border-left: 3px solid var(--charcoal); border-radius: var(--r-sm); margin-bottom: 24px; }
+    .case-hero-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 28px; }
+    .meta-chip { background: var(--charcoal-a); padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 600; color: var(--charcoal); }
     .sec { padding: 60px 0; }
-    .sec-eyebrow {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--text-3); margin-bottom: 12px;
-    }
-    .sec-title {
-      font-size: clamp(20px, 2.8vw, 26px);
-      font-weight: 700; letter-spacing: -0.025em;
-      color: var(--charcoal); line-height: 1.3;
-      margin-bottom: 32px;
-    }
-
-    /* ─── CONTENT BLOCKS ─── */
-    .content-block {
-      margin-bottom: 52px;
-    }
-    .content-block p {
-      font-size: 16px; color: var(--text-2);
-      line-height: 1.85; margin-bottom: 14px;
-    }
-    .content-block p:last-child { margin-bottom: 0; }
-    .content-block strong { color: var(--text-1); font-weight: 600; }
-
-    /* ─── NUMBERED SUBSECTIONS ─── */
-    .numbered-list {
-      display: flex; flex-direction: column; gap: 28px;
-    }
-    .numbered-item {
-      display: grid; grid-template-columns: 36px 1fr; gap: 24px;
-    }
-    .numbered-label {
-      font-size: 18px; font-weight: 700;
-      color: var(--charcoal);
-      padding-top: 2px;
-    }
-    .numbered-content p {
-      font-size: 16px; color: var(--text-2);
-      line-height: 1.85; margin-bottom: 12px;
-    }
-    .numbered-content p:last-child { margin-bottom: 0; }
-    .numbered-content strong { color: var(--text-1); font-weight: 600; }
-
-    /* ─── EVIDENCE GRID ─── */
-    .evidence-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
-    }
-    .evidence-card {
-      background: var(--white); border: 1.5px solid var(--border);
-      border-radius: var(--r); padding: 24px;
-    }
-    .evidence-num {
-      display: inline-block;
-      font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
-      text-transform: uppercase; color: var(--text-3);
-      margin-bottom: 12px;
-    }
-    .evidence-title {
-      font-size: 15px; font-weight: 700;
-      color: var(--text-1); margin-bottom: 16px; line-height: 1.4;
-    }
-    .evidence-img {
-      width: 100%; min-height: 200px;
-      background: var(--bg-card); border: 1.5px solid var(--border);
-      border-radius: var(--r-sm);
-      display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
-      font-size: 14px; color: var(--text-3);
-      margin-bottom: 12px;
-    }
-    .evidence-img img { width: 100%; height: auto; display: block; border-radius: var(--r-sm); }
-    .evidence-img.no-img { min-height: 300px; }
-    .evidence-desc {
-      font-size: 13px; color: var(--text-2);
-      line-height: 1.7;
-    }
-
-    /* ─── INSIGHT SECTION ─── */
-    .insight-list {
-      display: flex; flex-direction: column; gap: 24px;
-    }
-    .insight-item {
-      display: grid; grid-template-columns: 32px 1fr; gap: 18px;
-      padding: 20px 24px;
-      background: var(--bg-soft); border-radius: var(--r);
-    }
-    .insight-num {
-      display: flex; align-items: center; justify-content: center;
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--charcoal-a); font-weight: 700;
-      color: var(--charcoal); font-size: 15px;
-      flex-shrink: 0;
-    }
-    .insight-text {
-      font-size: 16px; color: var(--text-2);
-      line-height: 1.8;
-    }
+    .sec-alt { background: var(--bg-soft); }
+    .sec-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin-bottom: 10px; }
+    .sec-title { font-size: clamp(22px, 3vw, 28px); font-weight: 700; letter-spacing: -0.025em; color: var(--charcoal); line-height: 1.3; margin-bottom: 32px; }
+    .problem-list { display: flex; flex-direction: column; gap: 16px; }
+    .problem-item { padding: 22px 26px; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r); font-size: 15px; color: var(--text-2); line-height: 1.8; }
+    .problem-item strong { color: var(--text-1); font-weight: 600; }
+    .problem-item .problem-title { font-size: 14px; font-weight: 700; color: var(--text-1); margin-bottom: 6px; }
+    .did-list { display: flex; flex-direction: column; gap: 16px; }
+    .did-item { padding: 26px 28px; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r); }
+    .did-number { display: inline-block; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--charcoal); margin-bottom: 10px; background: var(--charcoal-a); padding: 3px 12px; border-radius: 6px; }
+    .did-title { font-size: 16px; font-weight: 700; color: var(--text-1); margin-bottom: 8px; letter-spacing: -0.01em; }
+    .did-desc { font-size: 15px; color: var(--text-2); line-height: 1.8; }
+    .did-desc strong { color: var(--text-1); font-weight: 600; }
+    .outcome-list { display: flex; flex-direction: column; gap: 14px; }
+    .outcome-item { display: flex; align-items: flex-start; gap: 12px; font-size: 15px; color: var(--text-2); line-height: 1.8; }
+    .outcome-item::before { content: ''; width: 5px; height: 5px; border-radius: 50%; background: var(--charcoal); flex-shrink: 0; margin-top: 10px; }
+    .outcome-item strong { color: var(--text-1); font-weight: 600; }
+    .metric-box { padding: 24px 28px; background: var(--charcoal); border-radius: var(--r); margin-top: 24px; }
+    .metric-label { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 8px; }
+    .metric-value { font-size: 28px; font-weight: 800; color: var(--white); letter-spacing: -0.03em; line-height: 1.2; }
+    .metric-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 6px; }
+    .evidence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .evidence-grid.single { grid-template-columns: 1fr; }
+    .evidence-grid.triple { grid-template-columns: repeat(3, 1fr); }
+    .evidence-item { display: flex; flex-direction: column; gap: 12px; }
+    .evidence-label { font-size: 13px; font-weight: 700; color: var(--text-1); }
+    .evidence-image { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: var(--r); min-height: 200px; display: flex; align-items: center; justify-content: center; overflow: hidden; color: var(--text-3); font-size: 14px; text-align: center; }
+    .evidence-image img { width: 100%; height: auto; display: block; border-radius: var(--r); }
+    .evidence-image.no-img { padding: 20px; min-height: 180px; }
+    .evidence-desc { font-size: 14px; color: var(--text-2); line-height: 1.8; }
+    .insight-list { display: flex; flex-direction: column; gap: 16px; }
+    .insight-item { display: flex; gap: 16px; padding: 22px 24px; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--r); align-items: flex-start; }
+    .insight-num { display: flex; align-items: center; justify-content: center; width: 30px; height: 30px; border-radius: 50%; background: var(--charcoal-a); font-size: 13px; font-weight: 700; color: var(--charcoal); flex-shrink: 0; }
+    .insight-text { font-size: 15px; color: var(--text-2); line-height: 1.85; padding-top: 4px; }
     .insight-text strong { color: var(--text-1); font-weight: 600; }
-
-    /* ─── TAGS ─── */
-    .tags-section {
-      display: flex; flex-wrap: wrap; gap: 8px;
-      padding-top: 24px; border-top: 1px solid var(--border);
-    }
-    .tag {
-      font-size: 12px; font-weight: 600;
-      padding: 6px 14px; border-radius: 100px;
-      background: var(--charcoal-a); color: var(--charcoal);
-      letter-spacing: 0.01em;
-    }
-
-    /* ─── KEY METRIC ─── */
-    .key-metric {
-      padding: 24px 28px;
-      background: var(--charcoal-a); border-radius: var(--r);
-      font-size: 15px; color: var(--text-2);
-      line-height: 1.7;
-      margin-bottom: 32px;
-    }
-    .key-metric strong { color: var(--charcoal); font-weight: 700; }
-
-    /* ─── FOOTER ─── */
-    footer {
-      padding: 60px 0;
-      border-top: 1px solid var(--border);
-    }
-    .footer-grid {
-      display: flex; justify-content: space-between;
-      align-items: center; gap: 24px; flex-wrap: wrap;
-    }
-    .footer-name {
-      font-size: 22px; font-weight: 800;
-      color: var(--charcoal); letter-spacing: -0.03em;
-      margin-bottom: 4px;
-    }
+    .tags-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tag { font-size: 12px; font-weight: 600; color: var(--charcoal); background: var(--white); padding: 5px 14px; border-radius: 100px; border: 1px solid var(--border); }
+    footer { padding: 60px 0; border-top: 1px solid var(--border); }
+    .footer-grid { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+    .footer-name { font-size: 22px; font-weight: 800; color: var(--charcoal); letter-spacing: -0.03em; margin-bottom: 4px; }
     .footer-sub { font-size: 14px; color: var(--text-3); }
     .footer-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-
-    /* ─── BUTTONS ─── */
-    .btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 13px 26px;
-      font-size: 14px; font-weight: 600;
-      border-radius: var(--r-sm); text-decoration: none;
-      letter-spacing: -0.01em;
-      transition: all var(--t) var(--ease);
-      border: 1.5px solid var(--charcoal);
-    }
-    .btn-dark {
-      background: var(--charcoal); color: var(--white);
-    }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; font-size: 14px; font-weight: 600; border-radius: var(--r-sm); text-decoration: none; letter-spacing: -0.01em; transition: all var(--t) var(--ease); }
+    .btn-dark { background: var(--charcoal); color: var(--white); border: 1.5px solid var(--charcoal); }
     .btn-dark:hover { background: var(--charcoal-2); border-color: var(--charcoal-2); transform: translateY(-1px); box-shadow: var(--sh-md); }
-
-    /* ─── FADE IN ─── */
-    .fi {
-      opacity: 0; transform: translateY(20px);
-      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
-    }
+    .btn-outline { background: transparent; color: var(--charcoal); border: 1.5px solid var(--border); }
+    .btn-outline:hover { border-color: var(--charcoal); background: var(--bg-card); transform: translateY(-1px); }
+    .fi { opacity: 0; transform: translateY(20px); transition: opacity 0.55s var(--ease), transform 0.55s var(--ease); }
     .fi.show { opacity: 1; transform: none; }
-    .fi:nth-child(2) { transition-delay: 0.08s; }
-    .fi:nth-child(3) { transition-delay: 0.16s; }
-    .fi:nth-child(4) { transition-delay: 0.24s; }
-    .fi:nth-child(5) { transition-delay: 0.32s; }
-
-    /* ─── RESPONSIVE ─── */
     @media (max-width: 800px) {
-      .wrap { padding: 0 20px; }
-      .case-header { padding: 44px 0 32px; }
-      .case-title { font-size: 28px; margin-bottom: 20px; }
-      .sec { padding: 44px 0; }
-      .sec-title { margin-bottom: 24px; }
-      .content-block { margin-bottom: 40px; }
-      .numbered-item { grid-template-columns: 28px 1fr; gap: 16px; }
-      .numbered-label { font-size: 16px; }
-      .numbered-content p { font-size: 15px; }
-      .evidence-grid { grid-template-columns: 1fr; }
-      .insight-item { padding: 16px 20px; gap: 14px; }
-      .insight-text { font-size: 15px; }
+      .case-hero { padding: 56px 0 44px; }
+      .evidence-grid, .evidence-grid.triple { grid-template-columns: 1fr; }
       .footer-grid { flex-direction: column; align-items: flex-start; }
+      .sec { padding: 44px 0; }
+    }
+    @media (max-width: 500px) {
+      .case-hero-title { font-size: 22px; }
+      .case-hero-summary { font-size: 14px; padding: 16px 18px; }
+      .sec-title { font-size: 20px; }
+      .did-item { padding: 20px 22px; }
+      .metric-value { font-size: 22px; }
     }
   </style>
 </head>
 <body>
-
-<!-- ══ HEADER ══ -->
-<header id="hd">
-  <div class="h-inner">
-    <a href="index.html" class="logo">오희은</a>
-    <button class="nav-toggle" id="navToggle">
-      <span></span><span></span><span></span>
-    </button>
-    <nav id="nav">
-      <a href="index.html">포트폴리오</a>
-      <a href="index.html#about">소개</a>
-      <a href="index.html#cases">케이스 스터디</a>
-      <a href="mailto:gldms1009@naver.com">연락하기</a>
-    </nav>
-  </div>
-</header>
-
-<div class="wrap"><div class="hr"></div></div>
-
-<!-- ══ CASE HEADER ══ -->
-<section class="case-header">
-  <div class="wrap">
-    <a href="index.html" class="case-back">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M11.5 7H2.5M5 10.5L2.5 7L5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      포트폴리오로 돌아가기
-    </a>
-    <h1 class="case-title fi">고객 의도 기반 환불·교환 흐름 개선 및 입력 구조 재설계</h1>
-    <p class="case-summary fi">자유 텍스트에 묻혀 있던 고객 의도를 선택값으로 구조화해, AS 재확인 왕복을 95% 이상 없앤 사례입니다. 기존 중복 필드를 활용하는 스펙을 직접 설계해 개발 범위를 최소화하고, SW개발팀·IT팀 협의로 빠르게 구현했습니다.</p>
-  </div>
-</section>
-
-<div class="wrap"><div class="hr"></div></div>
-
-<!-- ══ PROBLEM ══ -->
-<section class="sec">
-  <div class="wrap">
-    <p class="sec-eyebrow">Problem</p>
-    <h2 class="sec-title fi">반복 확인으로 고객과 운영 모두 지치고 있었습니다</h2>
-
-    <div class="content-block fi">
-      <p>고객이 환불/교환 의도를 자유 텍스트로만 남겨 CS가 추가 확인을 해야 했습니다. 고객은 다시 1:1 문의에 답변해야 했고, 그 과정에서 처리 흐름이 지연됐습니다.</p>
-      <p>반복 확인으로 고객 피로도와 운영 리소스가 함께 증가했습니다. CRM에 답변 작성일과 사실상 중복되는 확인일시가 기록되고 있어, 실질적 의미 없이 데이터만 누적되는 구조였습니다.</p>
+  <header id="hd">
+    <div class="h-inner">
+      <a href="index.html" class="logo">오희은</a>
+      <nav id="nav">
+        <a href="index.html#about">소개</a>
+        <a href="index.html#cases">케이스 스터디</a>
+        <a href="index.html#contact">연락하기</a>
+      </nav>
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴">
+        <span></span><span></span><span></span>
+      </button>
     </div>
-  </div>
-</section>
+  </header>
 
-<div class="wrap"><div class="hr"></div></div>
-
-<!-- ══ WHAT I DID ══ -->
-<section class="sec">
   <div class="wrap">
-    <p class="sec-eyebrow">What I Did</p>
-    <h2 class="sec-title fi">데이터 수집 단계부터 구조화했습니다</h2>
-
-    <div class="numbered-list">
-      <div class="numbered-item fi">
-        <div class="numbered-label">1.</div>
-        <div class="numbered-content">
-          <p><strong>데이터 품질의 출발점을 재정의했습니다</strong><br>데이터 품질은 처리 단계가 아니라 수집 단계에서 결정된다고 보고, 처리 중 추가 질문을 늘리기보다 입력 구조 자체를 바꾸는 방향으로 접근했습니다.</p>
-        </div>
+    <section class="case-hero">
+      <a href="index.html#cases" class="case-hero-nav">
+        <svg viewBox="0 0 14 14" fill="none"><path d="M11.5 7H2.5M5 3.5L1.5 7L5 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        포트폴리오로 돌아가기
+      </a>
+      <h1 class="case-hero-title">고객 의도 기반 환불·교환 흐름 개선 및 입력 구조 재설계</h1>
+      <div class="case-hero-summary"><strong>고객 VOC</strong>에 숨어 있던 의도를 선택값으로 구조화해, AS 재확인 왕복을 <strong>95% 이상 없앤</strong> 사례입니다. 데이터 수집 단계부터 스펙을 직접 정의하고 <strong>SW개발팀·IT팀과 협의해 개발 범위를 최소화</strong>하면서 빠르게 구현했습니다.</div>
+      <div class="case-hero-meta">
+        <span class="meta-chip">#VOCStructuring</span>
+        <span class="meta-chip">#InputDesign</span>
+        <span class="meta-chip">#DataIntegrity</span>
       </div>
+    </section>
+  </div>
 
-      <div class="numbered-item fi">
-        <div class="numbered-label">2.</div>
-        <div class="numbered-content">
-          <p><strong>중복 필드를 제거하고 의미 있는 데이터로 교체했습니다</strong><br>의미 없이 중복되던 확인일시 필드를 제거하고, 해당 위치에 고객의 요청 유형(환불 / 교환) 선택값을 배치했습니다.</p>
+  <section class="sec">
+    <div class="wrap">
+      <h2 class="sec-title">반복 확인으로 고객과 운영 모두 지치고 있었습니다</h2>
+      <div class="problem-list fi">
+        <div class="problem-item">
+          고객이 환불/교환 의도를 <strong>자유 텍스트로만 남겨 CS가 추가 확인을 해야 했습니다.</strong>
         </div>
-      </div>
-
-      <div class="numbered-item fi">
-        <div class="numbered-label">3.</div>
-        <div class="numbered-content">
-          <p><strong>입력 구조를 재설계하고 개발팀과 협의해 구현했습니다</strong><br>고객 문의 등록 단계에서 환불·교환 의도를 필수 선택값으로 수집하고, 그 값이 CRM에 구조화된 데이터로 저장되도록 설계했습니다. 중복되던 확인일시 필드 자리에 신규 필드를 배치하는 방식으로 개발 범위를 최소화하고, SW개발팀·IT팀과 협의해 DB 컬럼 추가 및 UI 구현을 빠르게 완료했습니다.</p>
+        <div class="problem-item">
+          고객은 다시 1:1 문의에 답변해야 했고, <strong>처리 흐름이 지연</strong>됐습니다.
+        </div>
+        <div class="problem-item">
+          반복 확인으로 <strong>고객 피로도와 운영 리소스가 함께 증가</strong>했습니다.
+        </div>
+        <div class="problem-item">
+          CRM에 답변 작성일과 사실상 중복되는 <strong>확인일시가 기록되어, 의미 없는 데이터만 누적</strong>되는 구조였습니다.
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<div class="wrap"><div class="hr"></div></div>
-
-<!-- ══ OUTCOME ══ -->
-<section class="sec">
-  <div class="wrap">
-    <p class="sec-eyebrow">Outcome</p>
-    <h2 class="sec-title fi">운영 구조가 변하면서 문제도 사라졌습니다</h2>
-
-    <div class="content-block fi">
-      <p><strong>AS 문의 재확인 왕복 95%+ 제거</strong> — 직접 스펙 정의 → ��개발팀·IT팀 협의 → 구현 완료</p>
-      <p><strong>고객과 CS 간 불필요한 추가 확인 감소</strong><br>환불·교환 처리 리드타임 단축 / 불필요한 DB 필드를 제거해 데이터 구조 정합성 향상</p>
-      <p><strong>중복 필드 자리를 활용하는 스펙 설계</strong><br>개발 범위를 최소화해 빠르게 반영</p>
-    </div>
-  </div>
-</section>
-
-<div class="wrap"><div class="hr"></div></div>
-
-<!-- ══ EVIDENCE ══ -->
-<section class="sec">
-  <div class="wrap">
-    <p class="sec-eyebrow">Evidence</p>
-    <h2 class="sec-title fi">3단계의 개선 과정</h2>
-
-    <div class="evidence-grid">
-      <div class="evidence-card fi">
-        <div class="evidence-num">Evidence 1</div>
-        <div class="evidence-title">기존 입력 구조 문제점</div>
-        <div class="evidence-img"><img src="img/case5_ev0.png" alt="기존 CRM 환불·교환 입력 화면 (개선 전)" /></div>
-        <div class="evidence-desc">기존 CRM의 환불·교환 입력 화면 — 자유 텍스트 의존 구조와 중복 필드(확인일시)가 있던 상태입니다.</div>
-      </div>
-
-      <div class="evidence-card fi">
-        <div class="evidence-num">Evidence 2</div>
-        <div class="evidence-title">입력 구조 재설계 화면</div>
-        <div class="evidence-img"><img src="img/case5_ev1.png" alt="입력 구조 재설계 화면 (확인일시 → 요청유형)" /></div>
-        <div class="evidence-desc">답변 작성일과 중복되던 확인일시 필드를 제거하고, 해당 위치에 고객 의도 데이터를 매핑했습니다.</div>
-      </div>
-
-      <div class="evidence-card fi">
-        <div class="evidence-num">Evidence 3</div>
-        <div class="evidence-title">요청 유형 선택값 반영 구조</div>
-        <div class="evidence-img"><img src="img/case5_ev2.png" alt="요청 유형 선택값 반영 구조 화면" /></div>
-        <div class="evidence-desc">고객이 문의 등록 단계에서 환불·교환 의도를 직접 선택하도록 바꾸고, 선택된 값이 후속 처리 기준으로 바로 활용되도록 설계했습니다.</div>
+  <section class="sec sec-alt">
+    <div class="wrap">
+      <h2 class="sec-title">데이터 수집 단계부터 구조화했습니다</h2>
+      <div class="did-list fi">
+        <div class="did-item">
+          <div class="did-number">1. 데이터 품질의 출발점 재정의</div>
+          <div class="did-title">처리가 아닌 수집 단계에서 품질 결정</div>
+          <div class="did-desc">데이터 품질은 처리 단계가 아니라 <strong>수집 단계에서 결정된다</strong>고 보고, 처리 중 추가 질문을 늘리기보다 입력 구조 자체를 바꾸는 방향으로 접근했습니다.</div>
+        </div>
+        <div class="did-item">
+          <div class="did-number">2. 중복 필드 제거 및 의미 있는 데이터로 교체</div>
+          <div class="did-title">확인일시 → 요청유형 선택값</div>
+          <div class="did-desc">의미 없이 중복되던 <strong>확인일시 필드를 제거하고, 해당 위치에 고객의 요청 유형(환불/교환) 선택값</strong>을 배치했습니다.</div>
+        </div>
+        <div class="did-item">
+          <div class="did-number">3. 입력 구조 재설계 및 개발팀 협의 구현</div>
+          <div class="did-title">스펙 직접 정의 → 개발 범위 최소화</div>
+          <div class="did-desc">고객 문의 등록 단계에서 환불·교환 의도를 <strong>필수 선택값으로 수집</strong>하고, CRM에 구조화된 데이터로 저장되도록 설계했습니다. 중복 필드 자리를 활용하는 방식으로 <strong>개발 범위를 최소화하는 스펙을 직접 정의</strong>하고, SW개발팀·IT팀과 협의해 DB 컬럼 추가 및 UI 구현을 빠르게 완료했습니다.</div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<div class="wrap"><div class="hr"></div></div>
-
-<!-- ══ INSIGHT ══ -->
-<section class="sec">
-  <div class="wrap">
-    <p class="sec-eyebrow">Insight</p>
-    <h2 class="sec-title fi">배운 점들</h2>
-
-    <div class="insight-list">
-      <div class="insight-item fi">
-        <div class="insight-num">1</div>
-        <div class="insight-text">질문을 줄이는 설계가 운영 비용을 줄였습니다.</div>
+  <section class="sec">
+    <div class="wrap">
+      <h2 class="sec-title">운영 구조가 변하면서 문제도 사라졌습니다</h2>
+      <div class="outcome-list fi">
+        <div class="outcome-item"><strong>AS 문의 재확인 왕복 95%+ 제거</strong> — 직접 스펙 정의 → SW개발팀·IT팀 협의 → 구현 완료</div>
+        <div class="outcome-item">고객과 CS 간 불필요한 추가 확인 감소</div>
+        <div class="outcome-item">환불·교환 처리 <strong>리드타임 단축</strong> 및 고객 피로도 감소</div>
+        <div class="outcome-item">불필요한 DB 필드 제거로 <strong>데이터 구조 정합성 향상</strong></div>
+        <div class="outcome-item">중복 필드 자리를 활용하는 스펙 설계로 <strong>개발 범위 최소화해 빠르게 반영</strong></div>
       </div>
-
-      <div class="insight-item fi">
-        <div class="insight-num">2</div>
-        <div class="insight-text"><strong>의도(Intent)는 해석이 아니라 선택으로 수집해야 했습니다.</strong> 자유 텍스트에 의존하면 처리 속도와 정확도가 사람의 판단에 좌우됐습니다. 입력 단계에서 선택값으로 구조화했을 때 처리 흐름이 끊기지 않고 자연스럽게 이어졌습니다.</div>
-      </div>
-
-      <div class="insight-item fi">
-        <div class="insight-num">3</div>
-        <div class="insight-text">최적화는 기능 추가보다 구조 점검에서 시작됐습니다.</div>
+      <div class="metric-box fi">
+        <div class="metric-label">Key Metric</div>
+        <div class="metric-value">95%+ 감소</div>
+        <div class="metric-sub">AS 재확인 왕복 제거</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<div class="wrap"><div class="hr"></div></div>
-
-<!-- ══ TAGS & METRIC ══ -->
-<section class="sec">
-  <div class="wrap">
-    <div class="key-metric fi">
-      <strong>Key metric:</strong> "95%+ 감소"
-    </div>
-
-    <div class="tags-section fi">
-      <span class="tag">IntentModeling</span>
-      <span class="tag">InputStructure</span>
-      <span class="tag">DataIntegrity</span>
-    </div>
-  </div>
-</section>
-
-<div class="wrap"><div class="hr"></div></div>
-
-<!-- ══ FOOTER ══ -->
-<footer>
-  <div class="wrap">
-    <div class="footer-grid">
-      <div>
-        <div class="footer-name">오희은</div>
-        <div class="footer-sub">서비스 기획 · 운영 매니저</div>
-        <div class="footer-sub" style="margin-top:4px;">gldms1009@naver.com &nbsp;·&nbsp; 010-2357-2674</div>
-      </div>
-      <div class="footer-actions">
-        <a href="mailto:gldms1009@naver.com" class="btn btn-dark">
-          이메일 보내기
-        </a>
+  <section class="sec sec-alt">
+    <div class="wrap">
+      <h2 class="sec-title">3단계의 개선 과정</h2>
+      <div class="evidence-grid triple fi">
+        <div class="evidence-item">
+          <div class="evidence-label">1. 기존 입력 구조 문제점</div>
+          <div class="evidence-image"><img src="img/case5_ev0.png" alt="기존 CRM 환불·교환 입력 화면 (개선 전)"></div>
+          <div class="evidence-desc">기존 CRM의 환불·교환 입력 화면 — 자유 텍스트 의존 구조와 중복 필드(확인일시)가 있던 상태입니다.</div>
+        </div>
+        <div class="evidence-item">
+          <div class="evidence-label">2. 입력 구조 재설계 화면</div>
+          <div class="evidence-image"><img src="img/case5_ev1.png" alt="입력 구조 재설계 화면"></div>
+          <div class="evidence-desc">답변 작성일과 중복되던 확인일시 필드를 제거하고, 해당 위치에 고객 의도 데이터를 매핑했습니다.</div>
+        </div>
+        <div class="evidence-item">
+          <div class="evidence-label">3. 요청 유형 선택값 반영 구조</div>
+          <div class="evidence-image"><img src="img/case5_ev2.png" alt="요청 유형 선택값 반영 구조"></div>
+          <div class="evidence-desc">고객이 문의 등록 단계에서 환불·교환 의도를 직접 선택하도록 바꾸고, 선택된 값이 후속 처리 기준으로 바로 활용되도록 설계했습니다.</div>
+        </div>
       </div>
     </div>
-  </div>
-</footer>
+  </section>
 
-<script>
-  // Header shadow on scroll
-  const hd = document.getElementById('hd');
-  window.addEventListener('scroll', () => {
-    hd.classList.toggle('on', window.scrollY > 8);
-  }, { passive: true });
+  <section class="sec">
+    <div class="wrap">
+      <h2 class="sec-title">배운 점</h2>
+      <div class="insight-list fi">
+        <div class="insight-item">
+          <div class="insight-num">1</div>
+          <div class="insight-text"><strong>질문을 줄이는 설계가 운영 비용을 줄였습니다.</strong> 처리 단계에서 확인을 추가하는 것보다 수집 단계를 구조화하는 것이 훨씬 효과적이었습니다.</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-num">2</div>
+          <div class="insight-text"><strong>의도(Intent)는 해석이 아니라 선택으로 수집해야 했습니다.</strong> 자유 텍스트에 의존하면 처리 속도와 정확도가 사람의 판단에 좌우됩니다. 입력 단계에서 선택값으로 구조화했을 때 처리 흐름이 끊기지 않고 자연스럽게 이어졌습니다.</div>
+        </div>
+        <div class="insight-item">
+          <div class="insight-num">3</div>
+          <div class="insight-text"><strong>최적화는 기능 추가보다 구조 점검에서 시작됩니다.</strong> 중복 필드를 발견하고 그 자리를 활용한 이 접근법이 개발 부담을 최소화하면서도 큰 효과를 냈습니다.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  // Fade-in on scroll
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.classList.add('show');
-        io.unobserve(e.target);
-      }
+  <section class="sec sec-alt">
+    <div class="wrap">
+      <div class="tags-row fi">
+        <span class="tag">#VOCStructuring</span>
+        <span class="tag">#InputDesign</span>
+        <span class="tag">#DataIntegrity</span>
+        <span class="tag">#DevCollaboration</span>
+      </div>
+    </div>
+  </section>
+
+  <footer id="contact">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-name">오희은</div>
+          <div class="footer-sub">서비스 기획 · 운영 매니저</div>
+          <div class="footer-sub" style="margin-top:4px;">gldms1009@naver.com &nbsp;·&nbsp; 010-2357-2674</div>
+        </div>
+        <div class="footer-actions">
+          <a href="mailto:gldms1009@naver.com" class="btn btn-dark">이메일 보내기</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const hd = document.getElementById('hd');
+    window.addEventListener('scroll', () => { hd.classList.toggle('on', window.scrollY > 8); }, { passive: true });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fi').forEach(el => io.observe(el));
+    const navToggle = document.getElementById('navToggle');
+    const navEl = document.getElementById('nav');
+    navToggle.addEventListener('click', () => { navToggle.classList.toggle('open'); navEl.classList.toggle('open'); });
+    document.querySelectorAll('nav a, .btn[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href.startsWith('#')) { e.preventDefault(); const target = document.querySelector(href); if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' }); navToggle.classList.remove('open'); navEl.classList.remove('open'); }
+      });
     });
-  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-
-  document.querySelectorAll('.fi').forEach(el => io.observe(el));
-
-  // Mobile nav toggle
-  const navToggle = document.getElementById('navToggle');
-  const navEl = document.getElementById('nav');
-  navToggle.addEventListener('click', () => {
-    navToggle.classList.toggle('open');
-    navEl.classList.toggle('open');
-  });
-
-  // Smooth nav click
-  document.querySelectorAll('nav a, .btn[href^="#"]').forEach(a => {
-    a.addEventListener('click', e => {
-      const href = a.getAttribute('href');
-      if (href.startsWith('#')) {
-        e.preventDefault();
-        const target = document.querySelector(href);
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        navToggle.classList.remove('open');
-        navEl.classList.remove('open');
-      }
-    });
-  });
-  
-</script>
-
+  </script>
 </body>
 </html>
