@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case 2. 시스템 제약 환경에서의 예외 처리 로직 재정의 및 Fail-soft UX 설계 | 오희은 포트폴리오</title>
+  <meta name="description" content="기술적 제약으로 이상적인 예외 처리 로직 구현이 어려운 상황에서, 실패 원인을 이해 가능하게 전달하는 UX와 실행 가능한 최소 단위의 대응 구조를 설계한 사례">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:        #FFFFFF;
+      --bg-soft:      #F7F7F8;
+      --bg-card:      #F3F3F4;
+      --border:       #E5E5E6;
+      --border-hover: #282D32;
+      --text-1:       #141416;
+      --text-2:       #50505A;
+      --text-3:       #909098;
+      --charcoal:     #282D32;
+      --charcoal-2:   #1A1E21;
+      --charcoal-a:   rgba(40,45,50,0.07);
+      --sh-sm:        0 1px 4px rgba(0,0,0,0.06);
+      --sh-md:        0 4px 20px rgba(0,0,0,0.09);
+      --sh-lg:        0 12px 40px rgba(0,0,0,0.12);
+      --r:            10px;
+      --r-sm:         6px;
+      --ease:         cubic-bezier(.4,0,.2,1);
+      --t:            0.22s;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-1);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
+    }
+
+    /* ─── LAYOUT ─── */
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+    .hr { width: 100%; height: 1px; background: var(--border); }
+
+    /* ─── HEADER ─── */
+    header {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--t) var(--ease);
+    }
+    header.on { border-bottom-color: var(--border); }
+    .h-inner {
+      max-width: 980px; margin: 0 auto; padding: 0 28px;
+      height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-size: 16px; font-weight: 800;
+      color: var(--charcoal); text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    nav { display: flex; gap: 30px; }
+    nav a {
+      font-size: 14px; font-weight: 500;
+      color: var(--text-2); text-decoration: none;
+      transition: color var(--t);
+    }
+    nav a:hover { color: var(--charcoal); }
+
+    /* ─── MOBILE NAV ─── */
+    .nav-toggle {
+      display: none; width: 36px; height: 36px;
+      border: none; background: none; cursor: pointer;
+      flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px;
+      background: var(--charcoal); border-radius: 2px;
+      transition: transform var(--t) var(--ease), opacity var(--t);
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 800px) {
+      .nav-toggle { display: flex; }
+      nav {
+        display: none; position: absolute; top: 62px; left: 0; right: 0;
+        background: rgba(255,255,255,0.96);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        flex-direction: column; gap: 0;
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+      }
+      nav.open { display: flex; }
+      nav a { padding: 14px 28px; font-size: 15px; }
+      nav a:hover { background: var(--bg-soft); }
+    }
+
+    /* ─── CASE DETAIL HERO ─── */
+    .case-hero {
+      padding: 72px 0 56px;
+      border-bottom: 1px solid var(--border);
+    }
+    .case-hero-nav {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 14px; color: var(--text-2);
+      text-decoration: none; margin-bottom: 32px;
+      transition: color var(--t);
+    }
+    .case-hero-nav:hover { color: var(--charcoal); }
+    .case-hero-nav svg {
+      width: 16px; height: 16px; flex-shrink: 0;
+    }
+    .case-hero-title {
+      font-size: clamp(26px, 4vw, 36px);
+      font-weight: 800; letter-spacing: -0.03em;
+      color: var(--charcoal); line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    .case-hero-summary {
+      font-size: 16px; color: var(--text-2);
+      line-height: 1.85; max-width: 720px;
+    }
+
+    /* ─── SECTION COMMON ─── */
+    .sec { padding: 56px 0; }
+    .sec-alt { background: var(--bg-soft); }
+    .sec-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 10px;
+    }
+    .sec-title {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 700; letter-spacing: -0.025em;
+      color: var(--charcoal); line-height: 1.3;
+      margin-bottom: 32px;
+    }
+
+    /* ─── PROBLEM SECTION ─── */
+    .problem-list {
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .problem-item {
+      padding: 24px 26px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      font-size: 15px; color: var(--text-2); line-height: 1.8;
+    }
+    .problem-item strong { color: var(--text-1); font-weight: 600; }
+
+    /* ─── WHAT I DID SECTION ─── */
+    .did-list {
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .did-item {
+      padding: 28px 30px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r);
+    }
+    .did-number {
+      display: inline-block;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--charcoal);
+      margin-bottom: 12px; background: var(--charcoal-a);
+      padding: 4px 12px; border-radius: 6px;
+    }
+    .did-title {
+      font-size: 16px; font-weight: 700;
+      color: var(--text-1); margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+    .did-desc {
+      font-size: 15px; color: var(--text-2); line-height: 1.8;
+    }
+    .did-desc strong { color: var(--text-1); font-weight: 600; }
+
+    /* ─── OUTCOME SECTION ─── */
+    .outcome-list {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .outcome-item {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 15px; color: var(--text-2); line-height: 1.8;
+    }
+    .outcome-item::before {
+      content: '';
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--charcoal); flex-shrink: 0;
+      margin-top: 9px;
+    }
+
+    /* ─── EVIDENCE SECTION ─── */
+    .evidence-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .evidence-item {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .evidence-label {
+      font-size: 13px; font-weight: 700; letter-spacing: 0.01em;
+      color: var(--text-1); text-transform: capitalize;
+    }
+    .evidence-image {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      min-height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      color: var(--text-3); font-size: 14px; text-align: center;
+    }
+    .evidence-image img { width: 100%; height: auto; display: block; border-radius: var(--r); }
+    .evidence-image.no-img { padding: 20px; }
+    .evidence-desc {
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+    }
+    .evidence-note {
+      font-size: 12px; color: var(--text-3); font-style: italic;
+      margin-top: 4px;
+    }
+
+    /* ─── INSIGHT SECTION ─── */
+    .insight-list {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .insight-item {
+      padding: 20px 24px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r);
+    }
+    .insight-number {
+      display: inline-block;
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--charcoal);
+      margin-bottom: 8px; background: var(--charcoal-a);
+      padding: 3px 10px; border-radius: 4px;
+    }
+    .insight-text {
+      font-size: 15px; color: var(--text-2); line-height: 1.85;
+    }
+    .insight-text strong { color: var(--text-1); font-weight: 600; }
+
+    /* ─── TAGS SECTION ─── */
+    .tags-section {
+      padding: 32px; margin-top: 20px;
+      background: var(--bg-card); border-radius: var(--r);
+      border: 1.5px solid var(--border);
+    }
+    .tags-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-3);
+      margin-bottom: 12px;
+    }
+    .tags-list {
+      display: flex; gap: 8px; flex-wrap: wrap;
+    }
+    .tag {
+      font-size: 12px; font-weight: 600;
+      color: var(--charcoal); background: var(--white);
+      padding: 6px 14px; border-radius: 100px;
+      border: 1px solid var(--border);
+      letter-spacing: -0.01em;
+    }
+
+    /* ─── METRIC BOX ─── */
+    .metric-box {
+      padding: 28px 32px;
+      background: var(--white); border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      margin-top: 20px;
+    }
+    .metric-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 8px;
+    }
+    .metric-value {
+      font-size: 28px; font-weight: 800;
+      color: var(--charcoal); letter-spacing: -0.03em;
+      background: var(--charcoal-a);
+      display: inline-block; padding: 6px 16px; border-radius: 8px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer-grid {
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+    .footer-name {
+      font-size: 22px; font-weight: 800;
+      color: var(--charcoal); letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .footer-sub { font-size: 14px; color: var(--text-3); }
+    .footer-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 26px;
+      font-size: 14px; font-weight: 600;
+      border-radius: var(--r-sm); text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: all var(--t) var(--ease);
+    }
+    .btn svg { flex-shrink: 0; }
+    .btn-dark {
+      background: var(--charcoal); color: var(--white);
+      border: 1.5px solid var(--charcoal);
+    }
+    .btn-dark:hover { background: var(--charcoal-2); border-color: var(--charcoal-2); transform: translateY(-1px); box-shadow: var(--sh-md); }
+    .btn-outline {
+      background: transparent; color: var(--charcoal);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--charcoal); background: var(--bg-card); transform: translateY(-1px); }
+
+    /* ─── FADE IN ─── */
+    .fi {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+    }
+    .fi.show { opacity: 1; transform: none; }
+    .fi:nth-child(2) { transition-delay: 0.08s; }
+    .fi:nth-child(3) { transition-delay: 0.16s; }
+    .fi:nth-child(4) { transition-delay: 0.24s; }
+    .fi:nth-child(5) { transition-delay: 0.32s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 800px) {
+      .case-hero { padding: 56px 0 44px; }
+      .case-hero-title { font-size: 24px; }
+      .evidence-grid { grid-template-columns: 1fr; }
+      .footer-grid { flex-direction: column; align-items: flex-start; }
+      .sec { padding: 44px 0; }
+    }
+    @media (max-width: 500px) {
+      .case-hero-nav { font-size: 13px; }
+      .case-hero-title { font-size: 20px; }
+      .case-hero-summary { font-size: 15px; }
+      .sec-title { font-size: 20px; }
+      .did-item { padding: 20px 22px; }
+      .tags-section { padding: 20px 22px; }
+      .metric-box { padding: 20px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="hd">
+  <div class="h-inner">
+    <a href="index.html" class="logo">오희은</a>
+    <nav id="nav">
+      <a href="index.html#about">소개</a>
+      <a href="index.html#cases">케이스 스터디</a>
+      <a href="index.html#exp">경력</a>
+      <a href="index.html#contact">연락하기</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ══ CASE HERO ══ -->
+<section class="case-hero">
+  <div class="wrap">
+    <a href="index.html#cases" class="case-hero-nav">
+      <svg viewBox="0 0 14 14" fill="none">
+        <path d="M11.5 7H2.5M5 3.5L1.5 7L5 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      포트폴리오로 돌아가기
+    </a>
+
+    <h1 class="case-hero-title">시스템 제약 환경에서의 예외 처리 로직 재정의 및 Fail-soft UX 설계</h1>
+    <p class="case-hero-summary">기술적 제약으로 이상적인 예외 처리 로직 구현이 어려운 상황에서, 실패 원인을 이해 가능하게 전달하는 UX와 실행 가능한 최소 단위의 대응 구조를 설계한 사례입니다.</p>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ PROBLEM SECTION ══ -->
+<section class="sec">
+  <div class="wrap">
+    <p class="sec-eyebrow">Problem</p>
+    <h2 class="sec-title">어떤 문제가 있었나요?</h2>
+
+    <div class="problem-list fi">
+      <div class="problem-item">
+        특정 조건에서는 정상 주문이 불가능했지만, <strong>시스템상 오류 원인이 사용자에게 충분히 전달되지 않았습니다.</strong>
+      </div>
+      <div class="problem-item">
+        고객은 이를 단순 시스템 오류로 인식하고 이탈하거나 CS 문의로 전환했고, <strong>CS 역시 명확한 기준 없이 개별 응대로 처리</strong>해야 했습니다.
+      </div>
+      <div class="problem-item">
+        특히 <strong>외부 시스템(API) 응답 제약</strong>으로 인해, 기획 단계에서 의도한 수준의 세부 예외 처리 로직을 그대로 구현하기 어려운 상태였습니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ WHAT I DID SECTION ══ -->
+<section class="sec sec-alt">
+  <div class="wrap">
+    <p class="sec-eyebrow">What I Did</p>
+    <h2 class="sec-title">어떻게 해결했나요?</h2>
+
+    <div class="did-list">
+      <div class="did-item fi">
+        <div class="did-number">1. 이상적 예외 처리의 한계를 확인</div>
+        <div class="did-title">구현 가능성을 포함한 재설계</div>
+        <div class="did-desc">
+          초기에는 모든 실패 조건을 시스템적으로 구분하려 했지만, 구현 가능성과 일정 측면에서 현실적인 한계가 있음을 확인했습니다. 이 과정에서 <strong>구현 가능성까지 포함해 예외 처리 방식을 다시 설계</strong>해야 한다고 판단했습니다.
+        </div>
+      </div>
+
+      <div class="did-item fi">
+        <div class="did-number">2. 기술 제약을 전제로 한 MVP 해법으로 전환</div>
+        <div class="did-title">API 응답값 기반 실행 가능한 설계</div>
+        <div class="did-desc">
+          API 응답값으로 판단 가능한 조건만을 기준으로 실패 유형을 다시 정의했습니다. <strong>기술 제약을 전제로 한 실행 가능한 최소 단위(MVP) 해법</strong>으로 방향을 전환했습니다.
+        </div>
+      </div>
+
+      <div class="did-item fi">
+        <div class="did-number">3. Fail-soft UX를 설계</div>
+        <div class="did-title">오류 상황에서 고객 이해와 자연스러운 흐름</div>
+        <div class="did-desc">
+          주문 실패 시 세부 원인을 모두 설명하지 않더라도, <strong>왜 지금 진행할 수 없는지를 이해할 수 있도록 Fail-soft UX를 설계</strong>했습니다. 오류 상황에서 FAQ 및 추가 안내로 자연스럽게 연결되도록 흐름을 보완하고, CS 대응 기준도 함께 정리해 운영 혼선을 줄였습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ OUTCOME SECTION ══ -->
+<section class="sec">
+  <div class="wrap">
+    <p class="sec-eyebrow">Outcome</p>
+    <h2 class="sec-title">어떤 성과를 얻었나요?</h2>
+
+    <div class="outcome-list fi">
+      <div class="outcome-item">
+        배송 가능일이 다른 상품이 포함된 경우, <strong>주문 차단 사유를 별도 페이지 이동 없이 장바구니 내에서 즉시 안내</strong>하도록 설계
+      </div>
+      <div class="outcome-item">
+        <strong>주문 실패 상황에서 고객 혼란과 즉각적인 이탈</strong>을 줄일 수 있는 구조 마련
+      </div>
+      <div class="outcome-item">
+        오류 인식으로 인한 CS 인입을 줄이고, <strong>기술 제약을 고려한 실행 가능한 개선안</strong>으로 개발·운영 간 합의
+      </div>
+      <div class="outcome-item">
+        <strong>이후 유사한 제약 상황이 발생하더라도 재사용 가능한 대응 구조 확보</strong>
+      </div>
+      <div class="outcome-item">
+        <strong>관련 CS 인입 주 2–3건 → 0건</strong> (구조 개선 이후)
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EVIDENCE SECTION ══ -->
+<section class="sec sec-alt">
+  <div class="wrap">
+    <p class="sec-eyebrow">Evidence</p>
+    <h2 class="sec-title">근거</h2>
+
+    <div class="evidence-grid">
+      <div class="evidence-item fi">
+        <div class="evidence-label">1. 장바구니 내 Fail-soft 안내 설계</div>
+        <div class="evidence-image"><img src="img/case2_ev1.png" alt="장바구니 내 Fail-soft 안내 설계 화면" /></div>
+        <div class="evidence-desc">
+          배송 가능일이 다른 상품이 포함된 경우, 별도 페이지 이동 없이 장바구니 안에서 즉시 주문 불가 사유를 확인할 수 있도록 설계했습니다.
+        </div>
+      </div>
+
+      <div class="evidence-item fi">
+        <div class="evidence-label">2. 기술 제약 기반 예외 처리 재정의</div>
+        <div class="evidence-image no-img">기획 문서 캡처 준비 중</div>
+        <div class="evidence-desc">
+          모든 실패 조건을 세분화하는 방식 대신, API 응답값으로 실제 판단 가능한 조건만 남겨 구현 가능한 범위 안에서 예외 처리 구조를 다시 설계했습니다.
+        </div>
+        <div class="evidence-note">기획 문서 캡처 추가 예정</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ INSIGHT SECTION ══ -->
+<section class="sec">
+  <div class="wrap">
+    <p class="sec-eyebrow">Key Insights</p>
+    <h2 class="sec-title">배운 점</h2>
+
+    <div class="insight-list fi">
+      <div class="insight-item">
+        <div class="insight-number">1</div>
+        <div class="insight-text">
+          <strong>완벽한 로직보다 실패를 설명하는 설계가 사용자 신뢰를 만들었습니다.</strong> 모든 오류를 기술적으로 해결하기 어려울 때, 고객이 상황을 이해하고 수용할 수 있도록 하는 것이 더 효과적이었습니다.
+        </div>
+      </div>
+
+      <div class="insight-item">
+        <div class="insight-number">2</div>
+        <div class="insight-text">
+          <strong>기술적 제약은 포기의 이유가 아니라 우선순위 조정의 기준이 됐습니다.</strong> 제약 속에서 정말 중요한 문제가 무엇인지 다시 생각하게 했고, 그것이 더 강한 솔루션을 만들었습니다.
+        </div>
+      </div>
+
+      <div class="insight-item">
+        <div class="insight-number">3</div>
+        <div class="insight-text">
+          <strong>기획자의 역할은 정답을 고집하는 것이 아니라 실행 가능한 최선안을 찾는 일</strong>이라고 봤습니다. 개발팀과 함께 제약을 공유하고, 그 안에서 고객에게 최대한의 가치를 전달하는 구조를 만드는 것이 핵심이었습니다.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TAGS & METRIC ══ -->
+<section class="sec sec-alt">
+  <div class="wrap">
+    <div class="tags-section fi">
+      <div class="tags-label">Tags</div>
+      <div class="tags-list">
+        <span class="tag">#FailSoftUX</span>
+        <span class="tag">#MVP기획</span>
+        <span class="tag">#ExceptionDesign</span>
+      </div>
+    </div>
+
+    <div class="metric-box fi">
+      <div class="metric-label">Key Metric</div>
+      <div class="metric-value">주 2-3건 → 0건</div>
+      <div style="font-size: 13px; color: var(--text-3); margin-top: 8px;">관련 CS 인입 감소</div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ FOOTER / CONTACT ══ -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-name">오희은</div>
+        <div class="footer-sub">서비스 기획 · 운영 매니저</div>
+        <div class="footer-sub" style="margin-top:4px;">gldms1009@naver.com &nbsp;·&nbsp; 010-2357-2674</div>
+      </div>
+      <div class="footer-actions">
+        <a href="mailto:gldms1009@naver.com" class="btn btn-dark">
+          이메일 보내기
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Header shadow on scroll
+  const hd = document.getElementById('hd');
+  window.addEventListener('scroll', () => {
+    hd.classList.toggle('on', window.scrollY > 8);
+  }, { passive: true });
+
+  // Fade-in on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('show');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fi').forEach(el => io.observe(el));
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navEl = document.getElementById('nav');
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('open');
+    navEl.classList.toggle('open');
+  });
+
+  // Smooth nav click
+  document.querySelectorAll('nav a, .btn[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const href = a.getAttribute('href');
+      if (href.startsWith('#')) {
+        e.preventDefault();
+        const target = document.querySelector(href);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        navToggle.classList.remove('open');
+        navEl.classList.remove('open');
+      }
+    });
+  });
+  
+</script>
+
+</body>
+</html>
