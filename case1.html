@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case 1. 외부 파트너 운영 손실 이슈의 책임 구조 재정의 및 비용 판단 기준 정리 | 오희은</title>
+  <meta name="description" content="택배사 표준약관·물류 계약서를 AI로 분석해 협상 근거를 확보하고, 배상 회수율을 14.7배 개선한 사례입니다.">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:        #FFFFFF;
+      --bg-soft:      #F7F7F8;
+      --bg-card:      #F3F3F4;
+      --border:       #E5E5E6;
+      --border-hover: #282D32;
+      --text-1:       #141416;
+      --text-2:       #50505A;
+      --text-3:       #909098;
+      --charcoal:     #282D32;
+      --charcoal-2:   #1A1E21;
+      --charcoal-a:   rgba(40,45,50,0.07);
+      --sh-sm:        0 1px 4px rgba(0,0,0,0.06);
+      --sh-md:        0 4px 20px rgba(0,0,0,0.09);
+      --sh-lg:        0 12px 40px rgba(0,0,0,0.12);
+      --r:            10px;
+      --r-sm:         6px;
+      --ease:         cubic-bezier(.4,0,.2,1);
+      --t:            0.22s;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-1);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
+    }
+
+    /* ─── LAYOUT ─── */
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+    .hr { width: 100%; height: 1px; background: var(--border); }
+
+    /* ─── HEADER ─── */
+    header {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--t) var(--ease);
+    }
+    header.on { border-bottom-color: var(--border); }
+    .h-inner {
+      max-width: 980px; margin: 0 auto; padding: 0 28px;
+      height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .logo {
+      font-size: 16px; font-weight: 800;
+      color: var(--charcoal); text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    nav { display: flex; gap: 30px; }
+    nav a {
+      font-size: 14px; font-weight: 500;
+      color: var(--text-2); text-decoration: none;
+      transition: color var(--t);
+    }
+    nav a:hover { color: var(--charcoal); }
+
+    /* ─── MOBILE NAV ─── */
+    .nav-toggle {
+      display: none; width: 36px; height: 36px;
+      border: none; background: none; cursor: pointer;
+      flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    }
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px;
+      background: var(--charcoal); border-radius: 2px;
+      transition: transform var(--t) var(--ease), opacity var(--t);
+    }
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 800px) {
+      .nav-toggle { display: flex; }
+      nav {
+        display: none; position: absolute; top: 62px; left: 0; right: 0;
+        background: rgba(255,255,255,0.96);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        flex-direction: column; gap: 0;
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+      }
+      nav.open { display: flex; }
+      nav a { padding: 14px 28px; font-size: 15px; }
+      nav a:hover { background: var(--bg-soft); }
+    }
+
+    /* ─── CASE HERO ─── */
+    .case-hero {
+      padding: 48px 0 36px;
+    }
+    .case-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-3);
+      margin-bottom: 20px;
+    }
+    .case-eyebrow-dot {
+      width: 4px; height: 4px; border-radius: 50%;
+      background: var(--charcoal);
+    }
+    .case-tags {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .case-tag {
+      font-size: 11px; font-weight: 700;
+      color: var(--charcoal); background: var(--charcoal-a);
+      padding: 4px 12px; border-radius: 100px;
+    }
+    .case-title {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 800; letter-spacing: -0.03em;
+      color: var(--charcoal); line-height: 1.2;
+      margin-bottom: 28px;
+      max-width: 720px;
+    }
+    .case-meta {
+      display: flex; gap: 24px; flex-wrap: wrap;
+      align-items: center;
+    }
+    .case-key-metric {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .case-key-val {
+      font-size: 22px; font-weight: 800;
+      color: var(--charcoal); letter-spacing: -0.02em;
+    }
+    .case-key-label {
+      font-size: 12px; color: var(--text-3); font-weight: 600;
+    }
+
+    /* ─── SECTION COMMON ─── */
+    .sec { padding: 56px 0; }
+    .sec-alt { background: var(--bg-soft); }
+    .sec-divider { padding-top: 0; border-top: 1px solid var(--border); }
+    .sec-eyebrow {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 10px;
+    }
+    .sec-title {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 700; letter-spacing: -0.025em;
+      color: var(--charcoal); line-height: 1.3;
+      margin-bottom: 28px;
+    }
+
+    /* ─── CALLOUT BOX ─── */
+    .callout {
+      background: var(--bg-card);
+      border-left: 3px solid var(--charcoal);
+      padding: 24px 28px;
+      border-radius: var(--r-sm);
+      margin-bottom: 48px;
+    }
+    .callout-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-3); margin-bottom: 8px;
+    }
+    .callout-text {
+      font-size: 16px; color: var(--text-1); line-height: 1.85;
+      font-weight: 500;
+    }
+
+    /* ─── PROBLEM SECTION ─── */
+    .problem-list {
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .problem-item {
+      padding-left: 20px;
+      position: relative;
+    }
+    .problem-item::before {
+      content: '▪';
+      position: absolute; left: 0; top: 0;
+      color: var(--charcoal);
+      font-size: 14px;
+    }
+    .problem-item-title {
+      font-size: 15px; font-weight: 700; color: var(--text-1);
+      margin-bottom: 6px;
+    }
+    .problem-item-desc {
+      font-size: 14px; color: var(--text-2); line-height: 1.75;
+    }
+
+    /* ─── WHAT I DID SECTION ─── */
+    .what-list {
+      display: flex; flex-direction: column; gap: 36px;
+    }
+    .what-item {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .what-item h3 {
+      font-size: 16px; font-weight: 700; color: var(--text-1);
+      letter-spacing: -0.01em;
+      display: flex; align-items: baseline; gap: 10px;
+    }
+    .what-item-num {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; border-radius: 50%;
+      background: var(--charcoal-a); color: var(--charcoal);
+      font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+    .what-item-desc {
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+      padding-left: 38px;
+      display: block;
+    }
+    .what-item-detail {
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+      padding-left: 38px;
+      display: block;
+      margin-top: 6px;
+    }
+
+    /* ─── OUTCOME SECTION ─── */
+    .outcome-main {
+      padding: 28px; background: var(--charcoal-a);
+      border-radius: var(--r);
+      margin-bottom: 24px;
+    }
+    .outcome-title {
+      font-size: 15px; font-weight: 700; color: var(--text-1);
+      margin-bottom: 12px;
+    }
+    .outcome-text {
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+      margin-bottom: 8px;
+    }
+    .outcome-results {
+      display: flex; flex-direction: column; gap: 6px;
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .outcome-result {
+      font-size: 14px; color: var(--text-1); font-weight: 500;
+      display: flex; gap: 8px; align-items: center;
+    }
+    .outcome-result::before {
+      content: '→';
+      color: var(--charcoal);
+      font-weight: 800;
+    }
+    .outcome-key {
+      font-size: 18px; font-weight: 800; color: var(--charcoal);
+      letter-spacing: -0.02em;
+    }
+    .outcome-update {
+      padding: 20px 24px; background: var(--white);
+      border: 1px solid var(--border); border-radius: var(--r-sm);
+      margin-top: 0;
+    }
+    .outcome-update-label {
+      font-size: 11px; font-weight: 700; color: var(--text-3);
+      text-transform: uppercase; letter-spacing: 0.08em;
+      margin-bottom: 8px;
+    }
+    .outcome-update-text {
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+    }
+    .outcome-update-highlight {
+      color: var(--charcoal); font-weight: 600;
+    }
+
+    /* ─── EVIDENCE SECTION ─── */
+    .evidence-list {
+      display: flex; flex-direction: column; gap: 40px;
+    }
+    .evidence-item {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 32px;
+      align-items: start;
+    }
+    .evidence-item.full-width {
+      grid-template-columns: 1fr;
+    }
+    .evidence-content h4 {
+      font-size: 15px; font-weight: 700; color: var(--text-1);
+      margin-bottom: 12px;
+    }
+    .evidence-content p {
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+      margin-bottom: 10px;
+    }
+    .evidence-content p:last-child {
+      margin-bottom: 0;
+    }
+    .evidence-note {
+      font-size: 12px; color: var(--text-3); font-style: italic;
+      margin-top: 12px; padding-top: 12px;
+      border-top: 1px solid var(--border);
+    }
+    .evidence-image {
+      width: 100%; min-height: 200px;
+      background: var(--bg-card); border: 1.5px solid var(--border);
+      border-radius: var(--r);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+      color: var(--text-3); font-size: 13px; text-align: center;
+    }
+    .evidence-image img {
+      width: 100%; height: auto; display: block; border-radius: var(--r);
+    }
+    .evidence-image.no-img { padding: 32px; }
+    .evidence-image-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+
+    /* ─── INSIGHT SECTION ─── */
+    .insight-list {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .insight-item {
+      padding: 18px 22px; background: var(--white);
+      border: 1.5px solid var(--border); border-radius: var(--r-sm);
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+    }
+    .insight-item strong {
+      color: var(--text-1); font-weight: 600;
+    }
+
+    /* ─── BUTTONS ─── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 26px;
+      font-size: 14px; font-weight: 600;
+      border-radius: var(--r-sm); text-decoration: none;
+      letter-spacing: -0.01em;
+      transition: all var(--t) var(--ease);
+    }
+    .btn svg { flex-shrink: 0; }
+    .btn-dark {
+      background: var(--charcoal); color: var(--white);
+      border: 1.5px solid var(--charcoal);
+    }
+    .btn-dark:hover { background: var(--charcoal-2); border-color: var(--charcoal-2); transform: translateY(-1px); box-shadow: var(--sh-md); }
+    .btn-outline {
+      background: transparent; color: var(--charcoal);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--charcoal); background: var(--bg-card); transform: translateY(-1px); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+    }
+    .footer-grid {
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+    .footer-name {
+      font-size: 22px; font-weight: 800;
+      color: var(--charcoal); letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+    .footer-sub { font-size: 14px; color: var(--text-3); }
+    .footer-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+    /* ─── FADE IN ─── */
+    .fi {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+    }
+    .fi.show { opacity: 1; transform: none; }
+    .fi:nth-child(2) { transition-delay: 0.08s; }
+    .fi:nth-child(3) { transition-delay: 0.16s; }
+    .fi:nth-child(4) { transition-delay: 0.24s; }
+    .fi:nth-child(5) { transition-delay: 0.32s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 800px) {
+      .case-title { font-size: clamp(24px, 4vw, 32px); }
+      .case-meta { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .evidence-item { grid-template-columns: 1fr; }
+      .evidence-image-row { grid-template-columns: 1fr; }
+      .footer-grid { flex-direction: column; align-items: flex-start; }
+      .sec { padding: 42px 0; }
+      .what-list { gap: 28px; }
+    }
+    @media (max-width: 500px) {
+      .wrap { padding: 0 20px; }
+      .case-hero { padding: 32px 0 24px; }
+      .case-title { font-size: 22px; margin-bottom: 20px; }
+      .case-key-val { font-size: 18px; }
+      .sec { padding: 32px 0; }
+      .sec-title { margin-bottom: 20px; }
+      .callout { padding: 18px 20px; margin-bottom: 32px; }
+      .what-item-desc, .what-item-detail { padding-left: 28px; }
+      .evidence-item { gap: 16px; }
+      .evidence-image { min-height: 240px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="hd">
+  <div class="h-inner">
+    <a href="index.html" class="logo">오희은</a>
+    <nav id="nav">
+      <a href="index.html#cases">← 포트폴리오로 돌아가기</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ══ CASE HERO ══ -->
+<section class="case-hero">
+  <div class="wrap">
+    <div class="case-eyebrow">
+      <span class="case-eyebrow-dot"></span>
+      Case Study
+    </div>
+
+    <div class="case-tags">
+      <span class="case-tag">#DecisionFramework</span>
+      <span class="case-tag">#PartnerOperations</span>
+      <span class="case-tag">#RiskControl</span>
+    </div>
+
+    <h1 class="case-title">외부 파트너 운영 손실 이슈의 책임 구조 재정의 및 비용 판단 기준 정리</h1>
+
+    <div class="case-meta">
+      <div class="case-key-metric">
+        <div class="case-key-val">14.7배↑ → 월 1,900만 원</div>
+        <div class="case-key-label">배상 회수율 개선</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ 한 줄 요약 ══ -->
+<section class="sec">
+  <div class="wrap">
+    <div class="callout fi">
+      <div class="callout-label">한 줄 요약</div>
+      <div class="callout-text">외부 파트너 전환 과정에서 반복되던 손실 이슈를 약관·계약 기준의 문제로 재정의하고, 보상 절차 간소화와 정산 선공제 기준을 마련해 회사가 손실 대응의 주도권을 확보하도록 만든 사례입니다.</div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ PROBLEM ══ -->
+<section class="sec sec-divider">
+  <div class="wrap">
+    <p class="sec-eyebrow">Problem</p>
+    <h2 class="sec-title">외부 파트너 회신에 끌려다니며 손실이 통제되지 않았습니다</h2>
+
+    <div class="problem-list fi">
+      <div class="problem-item">
+        <div class="problem-item-title">택배사 전환 시기</div>
+        <div class="problem-item-desc">회수·사진 3종 제출이 필수인 복잡한 보상 절차로 보상 누락과 업무 로스 발생</div>
+      </div>
+
+      <div class="problem-item">
+        <div class="problem-item-title">물류 파트너 전환 시기</div>
+        <div class="problem-item-desc">출고 지연·미통보·포장 불량·환불 후 중복 출고 등으로 운영 혼선 심화 및 파트너의 회신 지연으로 인해 손실 지속 누락</div>
+      </div>
+
+      <div class="problem-item">
+        <div class="problem-item-title">공통 문제</div>
+        <div class="problem-item-desc">외부 파트너 회신과 배상 승인에 끌려다니며 손실이 통제되지 않는 구조</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ WHAT I DID ══ -->
+<section class="sec sec-divider">
+  <div class="wrap">
+    <p class="sec-eyebrow">What I Did</p>
+    <h2 class="sec-title">3가지 관점에서 손실을 통제 가능한 구조로 변환했습니다</h2>
+
+    <div class="what-list">
+      <div class="what-item fi">
+        <h3>
+          <div class="what-item-num">1</div>
+          약관을 기반으로 보상 절차를 간소화했습니다
+        </h3>
+        <span class="what-item-desc">택배사의 과도한 회수·증빙 중심 구조를 그대로 따르지 않고, 택배 표준약관을 Gemini로 검토해 파손 인지 시 송화인 통보 의무와 사고 조치 의무를 근거로 문제를 제기했습니다.</span>
+        <span class="what-item-detail">이를 통해 협상 주도권을 확보했고, 결과적으로 실물 회수 및 사진 3종 필수 구조를 완화해 최소 증빙 기반으로 접수 가능한 절차로 전환했습니다.</span>
+      </div>
+
+      <div class="what-item fi">
+        <h3>
+          <div class="what-item-num">2</div>
+          계약을 근거로 정산 구조를 전환했습니다
+        </h3>
+        <span class="what-item-desc">외부 물류 파트너 전환 이후에는 파트너 회신을 기다리는 방식으로는 손실 통제가 불가능하다고 판단했습니다. 물류계약서를 Claude·NotebookLM으로 교차 분석해 상차 이후 책임 및 정산 조항을 확인했고, 이를 바탕으로 당사 귀책이 아닌 피해액을 월 물류비에서 선공제할 수 있는 운영 기준을 마련했습니다.</span>
+      </div>
+
+      <div class="what-item fi">
+        <h3>
+          <div class="what-item-num">3</div>
+          손실을 판단 가능한 기준으로 구조화했습니다
+        </h3>
+        <span class="what-item-desc">손실을 단순 집계가 아닌 정산 가능한 형태로 바꾸기 위해 유형별 비용 반영 기준을 정리했습니다.</span>
+        <span class="what-item-detail">
+          · 출고 지연 / 누락: 환불액, 재배송비, CS 보상<br>
+          · 파손 / 분실: 상품가, 재배송비, CS 보상<br>
+          · 배송 지연: 상품 특성별 원가/운임 기준 분리<br><br>
+          이를 기반으로 피해 현황 통보서와 정산 자료를 작성해 손실을 협상 가능한 기준으로 전환했습니다.
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ OUTCOME ══ -->
+<section class="sec sec-divider">
+  <div class="wrap">
+    <p class="sec-eyebrow">Outcome</p>
+    <h2 class="sec-title">손실 통제의 주도권을 확보했습니다</h2>
+
+    <div class="outcome-main fi">
+      <div class="outcome-title">보상 절차 간소화와 정산 구조 전환을 통해</div>
+      <div class="outcome-text">외부 파트너 회신 여부와 무관하게 손실을 통제할 수 있는 구조를 확보했습니다.</div>
+      <div class="outcome-results">
+        <div class="outcome-result">
+          보상 처리 리드타임 단축
+        </div>
+        <div class="outcome-result">
+          내부 업무 로스 감소
+        </div>
+        <div class="outcome-result">
+          고객 대응 혼선 감소
+        </div>
+      </div>
+    </div>
+
+    <div class="outcome-update fi">
+      <div class="outcome-update-label">최종 결과</div>
+      <div class="outcome-update-text">
+        월 배상 회수액을 약 50만 원 수준에서 <span class="outcome-update-highlight">700만 원 이상으로 확대</span>하며, <span class="outcome-update-highlight">배상 회수율 14.7배 이상 개선</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ OUTCOME UPDATE ══ -->
+<section class="sec sec-divider">
+  <div class="wrap">
+    <p class="sec-eyebrow">Outcome Update</p>
+    <h2 class="sec-title">2026년 3월 기준</h2>
+
+    <div class="outcome-update fi">
+      <div class="outcome-update-label">확장 결과</div>
+      <div class="outcome-update-text">
+        3월 피해현황 통보서 기준 총 차감 예정액 <span class="outcome-update-highlight">19,101,725원</span>으로, 12월 대비 약 <span class="outcome-update-highlight">2.6배 추가 확대</span>.<br><br>
+        계약서 조항 기준으로 피해유형을 재정비하고, 반품 환원 누락분을 추가 반영한 결과입니다.
+      </div>
+    </div>
+
+    <div class="outcome-main fi" style="margin-top: 20px;">
+      <div class="outcome-text" style="color: var(--charcoal); font-weight: 600;">
+        → 구조화된 정산 기준이 일회성이 아닌 매월 스케일하는 시스템으로 정착되고 있음을 확인.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ EVIDENCE ══ -->
+<section class="sec sec-divider">
+  <div class="wrap">
+    <p class="sec-eyebrow">Evidence</p>
+    <h2 class="sec-title">실제 과정과 결과물</h2>
+
+    <div class="evidence-list">
+      <!-- Evidence 1 -->
+      <div class="evidence-item full-width fi">
+        <div class="evidence-content">
+          <h4>1. 택배사 보상 절차 협의 경과 요약</h4>
+          <p>표준약관 검토를 통해 협상의 법률적 근거를 확보하고, 이를 바탕으로 택배사와 진행한 협의 과정과 최종 합의 내용을 정리했습니다.</p>
+          <div class="evidence-note">협의 이메일·슬랙 캡처 추가 예정</div>
+        </div>
+      </div>
+
+      <!-- Evidence 2 -->
+      <div class="evidence-item fi">
+        <div class="evidence-content">
+          <h4>2. 계약 기반 정산 기준 적용</h4>
+          <p>물류계약서를 직접 검토해 제6조(상차 이후 비용 부담 조항)와 제10조(귀책사유별 배상 책임)를 근거로, 배상 승인 없이 피해액을 물류비에서 선공제할 수 있는 구조임을 직접 판단하고 제안했습니다.</p>
+          <p>CEO 승인 후 환불액·재배송비·CS 보상까지 포함한 정산 기준으로 공식화했습니다.</p>
+          <p style="font-size: 12px; color: var(--text-3); font-style: italic; margin-top: 12px;">배송 파트너(A사)와 물류 파트너(B사)로 익명화하여 표시</p>
+        </div>
+        <div class="evidence-image"><img src="img/case1_ev2.png" alt="계약 기반 정산 기준 적용 문서" /></div>
+      </div>
+
+      <!-- Evidence 3 -->
+      <div class="evidence-item fi">
+        <div class="evidence-content">
+          <h4>3. 실제 정산 자료 정리 및 수정본 전달</h4>
+          <p>체계적인 피해 현황 통보서와 월별 정산 자료를 작성해 파트너에 전달하고, 협의 과정에서 반영된 수정본을 관리했습니다.</p>
+          <p>이 과정에서 손실 항목이 점진적으로 체계화되어 점점 더 정확한 배상액 산출로 이어졌습니다.</p>
+        </div>
+        <div class="evidence-image-row">
+          <div class="evidence-image"><img src="img/case1_ev3a.png" alt="피해 현황 통보서 정산 자료 (1)" /></div>
+          <div class="evidence-image"><img src="img/case1_ev3b.png" alt="피해 현황 통보서 정산 자료 (2)" /></div>
+        </div>
+      </div>
+
+      <!-- Evidence 4 -->
+      <div class="evidence-item fi">
+        <div class="evidence-content">
+          <h4>4. 배상 회수 개선 수치 근거 (사내 공유, 2026.03)</h4>
+          <p>월별 배상 회수액의 추이와 구조화된 정산 기준의 효과를 보여주는 수치 자료입니다.</p>
+          <p>초기 50만 원 수준에서 시작해 700만 원을 넘어 19.1백만 원대로 지속 확대되는 과정을 담고 있습니다.</p>
+        </div>
+        <div class="evidence-image"><img src="img/case1_ev4.png" alt="배상 회수 개선 수치 근거 (사내 공유 자료)" /></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ INSIGHT ══ -->
+<section class="sec sec-divider">
+  <div class="wrap">
+    <p class="sec-eyebrow">Insight</p>
+    <h2 class="sec-title">이 과정에서 배운 것</h2>
+
+    <div class="insight-list">
+      <div class="insight-item fi">
+        운영 손실은 <strong>개별 이슈 대응으로는 해결되지 않았습니다.</strong>
+      </div>
+      <div class="insight-item fi">
+        책임과 비용을 <strong>판단 가능한 기준으로 구조화할 때</strong> 비로소 통제 가능한 문제가 되었습니다.
+      </div>
+      <div class="insight-item fi">
+        또한 약관과 계약서는 단순 참고 문서가 아니라 <strong>운영의 주도권을 바꾸는 설계 도구</strong>라는 것을 배웠습니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ BACK TO PORTFOLIO ══ -->
+<section class="sec">
+  <div class="wrap" style="text-align: center;">
+    <a href="index.html#cases" class="btn btn-dark fi">
+      포트폴리오로 돌아가기
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M11.5 7H2.5M5 10.5L2.5 7L5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-name">오희은</div>
+        <div class="footer-sub">서비스 기획 · 운영 매니저</div>
+        <div class="footer-sub" style="margin-top:4px;">gldms1009@naver.com &nbsp;·&nbsp; 010-2357-2674</div>
+      </div>
+      <div class="footer-actions">
+        <a href="mailto:gldms1009@naver.com" class="btn btn-dark">
+          이메일 보내기
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Header shadow on scroll
+  const hd = document.getElementById('hd');
+  window.addEventListener('scroll', () => {
+    hd.classList.toggle('on', window.scrollY > 8);
+  }, { passive: true });
+
+  // Fade-in on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('show');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fi').forEach(el => io.observe(el));
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navEl = document.getElementById('nav');
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('open');
+    navEl.classList.toggle('open');
+  });
+
+  // Close nav on click
+  document.querySelectorAll('nav a').forEach(a => {
+    a.addEventListener('click', () => {
+      navToggle.classList.remove('open');
+      navEl.classList.remove('open');
+    });
+  });
+</script>
+
+</body>
+</html>
