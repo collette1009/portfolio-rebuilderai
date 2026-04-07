@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case 3: 반복 입력 자동화와 기준값 표준화 | 오희은</title>
+  <meta name="description" content="반복 입력 자동화와 기준값 표준화를 통한 운영 데이터 정합성 확보 사례">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:        #FFFFFF;
+      --bg-soft:      #F7F7F8;
+      --bg-card:      #F3F3F4;
+      --border:       #E5E5E6;
+      --border-hover: #282D32;
+      --text-1:       #141416;
+      --text-2:       #50505A;
+      --text-3:       #909098;
+      --charcoal:     #282D32;
+      --charcoal-2:   #1A1E21;
+      --charcoal-a:   rgba(40,45,50,0.07);
+      --sh-sm:        0 1px 4px rgba(0,0,0,0.06);
+      --sh-md:        0 4px 20px rgba(0,0,0,0.09);
+      --sh-lg:        0 12px 40px rgba(0,0,0,0.12);
+      --r:            10px;
+      --r-sm:         6px;
+      --ease:         cubic-bezier(.4,0,.2,1);
+      --t:            0.22s;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text-1);
+      background: var(--white);
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.7;
+    }
+
+    /* ─── LAYOUT ─── */
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
+
+    .hr { width: 100%; height: 1px; background: var(--border); }
+
+    /* ─── HEADER ─── */
+    header {
+      position: sticky; top: 0; z-index: 200;
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid transparent;
+      transition: border-color var(--t) var(--ease);
+    }
+
+    header.on { border-bottom-color: var(--border); }
+
+    .h-inner {
+      max-width: 980px; margin: 0 auto; padding: 0 28px;
+      height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 16px; font-weight: 800;
+      color: var(--charcoal); text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    nav { display: flex; gap: 30px; }
+
+    nav a {
+      font-size: 14px; font-weight: 500;
+      color: var(--text-2); text-decoration: none;
+      transition: color var(--t);
+    }
+
+    nav a:hover { color: var(--charcoal); }
+
+    /* ─── MOBILE NAV ─── */
+    .nav-toggle {
+      display: none; width: 36px; height: 36px;
+      border: none; background: none; cursor: pointer;
+      flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    }
+
+    .nav-toggle span {
+      display: block; width: 20px; height: 2px;
+      background: var(--charcoal); border-radius: 2px;
+      transition: transform var(--t) var(--ease), opacity var(--t);
+    }
+
+    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2) { opacity: 0; }
+    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 800px) {
+      .nav-toggle { display: flex; }
+      nav {
+        display: none; position: absolute; top: 62px; left: 0; right: 0;
+        background: rgba(255,255,255,0.96);
+        backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+        flex-direction: column; gap: 0;
+        border-bottom: 1px solid var(--border);
+        padding: 8px 0;
+      }
+      nav.open { display: flex; }
+      nav a { padding: 14px 28px; font-size: 15px; }
+      nav a:hover { background: var(--bg-soft); }
+    }
+
+    /* ─── CASE DETAIL HEADER ─── */
+    .case-hero {
+      padding: 76px 0 56px;
+      background: var(--white);
+    }
+
+    .case-nav-back {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 600;
+      color: var(--text-3); text-decoration: none;
+      margin-bottom: 28px;
+      transition: color var(--t);
+    }
+
+    .case-nav-back:hover { color: var(--text-1); }
+
+    .case-nav-back svg {
+      width: 14px; height: 14px;
+      flex-shrink: 0;
+    }
+
+    .case-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800; letter-spacing: -0.03em;
+      color: var(--charcoal); line-height: 1.2;
+      margin-bottom: 20px;
+      max-width: 820px;
+    }
+
+    .case-summary {
+      font-size: 17px; font-weight: 500;
+      color: var(--text-2); line-height: 1.8;
+      max-width: 820px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ─── CASE CONTENT ─── */
+    .case-section {
+      padding: 56px 0;
+    }
+
+    .case-section:first-of-type {
+      padding-top: 0;
+    }
+
+    .case-section-title {
+      font-size: 20px; font-weight: 700;
+      color: var(--charcoal); letter-spacing: -0.02em;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .case-section-title.numbered::before {
+      content: attr(data-num);
+      display: inline-block;
+      width: 28px; height: 28px;
+      margin-right: 12px;
+      border-radius: 50%;
+      background: var(--charcoal-a);
+      color: var(--charcoal);
+      text-align: center; line-height: 28px;
+      font-size: 13px; font-weight: 700;
+    }
+
+    .case-section-content {
+      display: flex; flex-direction: column; gap: 24px;
+    }
+
+    .case-subsection {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+
+    .case-subsection-title {
+      font-size: 15px; font-weight: 700;
+      color: var(--text-1);
+      letter-spacing: -0.01em;
+    }
+
+    .case-subsection-text {
+      font-size: 15px; color: var(--text-2); line-height: 1.85;
+      margin-left: 20px;
+    }
+
+    .case-subsection-text::before {
+      content: '—';
+      position: relative;
+      left: -20px;
+      margin-right: 8px;
+      color: var(--text-3);
+    }
+
+    .case-list {
+      display: flex; flex-direction: column; gap: 10px;
+      margin-left: 20px;
+    }
+
+    .case-list-item {
+      font-size: 15px; color: var(--text-2); line-height: 1.8;
+      display: flex; gap: 12px;
+      align-items: flex-start;
+    }
+
+    .case-list-item::before {
+      content: '•';
+      color: var(--charcoal);
+      flex-shrink: 0;
+      font-weight: 600;
+    }
+
+    .case-text-block {
+      font-size: 15px; color: var(--text-2); line-height: 1.85;
+    }
+
+    .case-text-block strong { color: var(--text-1); font-weight: 600; }
+
+    /* ─── EVIDENCE GRID ─── */
+    .evidence-grid {
+      display: grid; grid-template-columns: 1fr; gap: 24px;
+    }
+
+    .evidence-item {
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    .evidence-label {
+      font-size: 14px; font-weight: 700;
+      color: var(--text-1); letter-spacing: -0.01em;
+    }
+
+    .evidence-placeholder {
+      width: 100%;
+      min-height: 200px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      color: var(--text-3);
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .evidence-placeholder img { width: 100%; height: auto; display: block; border-radius: var(--r); }
+    .evidence-placeholder.no-img { min-height: 300px; }
+
+    .evidence-desc {
+      font-size: 14px; color: var(--text-2); line-height: 1.8;
+    }
+
+    /* ─── TAGS ─── */
+    .case-tags {
+      display: flex; gap: 8px; flex-wrap: wrap;
+      padding: 32px 0 0;
+    }
+
+    .case-tag {
+      font-size: 12px; font-weight: 600;
+      color: var(--charcoal); background: var(--charcoal-a);
+      padding: 6px 14px; border-radius: 100px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 60px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 60px;
+    }
+
+    .footer-grid {
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+
+    .footer-name {
+      font-size: 22px; font-weight: 800;
+      color: var(--charcoal); letter-spacing: -0.03em;
+      margin-bottom: 4px;
+    }
+
+    .footer-info {
+      display: flex; flex-direction: column; gap: 4px;
+    }
+
+    .footer-sub { font-size: 14px; color: var(--text-3); }
+
+    /* ─── FADE IN ─── */
+    .fi {
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.55s var(--ease), transform 0.55s var(--ease);
+    }
+
+    .fi.show { opacity: 1; transform: none; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 800px) {
+      .case-title { font-size: 28px; }
+      .case-summary { font-size: 15px; }
+      .case-section { padding: 40px 0; }
+      .evidence-grid { grid-template-columns: 1fr; }
+      .footer-grid { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 500px) {
+      .case-hero { padding: 56px 0 40px; }
+      .case-title { font-size: 24px; }
+      .case-summary { font-size: 14px; }
+      .case-section { padding: 32px 0; }
+      .case-section-title { font-size: 17px; }
+      .case-subsection-text { font-size: 14px; }
+      .case-list-item { font-size: 14px; }
+      .case-text-block { font-size: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header id="hd">
+  <div class="h-inner">
+    <a href="index.html" class="logo">오희은</a>
+    <nav id="nav">
+      <a href="index.html#about">소개</a>
+      <a href="index.html#cases">케이스 스터디</a>
+      <a href="index.html#exp">경력</a>
+      <a href="index.html#contact">연락하기</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="메뉴">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ══ CASE HERO ══ -->
+<section class="case-hero">
+  <div class="wrap">
+    <a href="index.html#cases" class="case-nav-back fi">
+      <svg viewBox="0 0 14 14" fill="none">
+        <path d="M11.5 7H2.5M5 3.5L1.5 7L5 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      케이스 스터디로 돌아가기
+    </a>
+
+    <h1 class="case-title fi">반복 입력 자동화와 기준값 표준화를 통한 운영 데이터 정합성 확보</h1>
+
+    <p class="case-summary fi">반복 입력 구간을 단축키 기반 자동화로 전환하되, 귀책 기준값 오입력을 줄이고 최종 확인은 사람에게 남겨 처리 속도와 데이터 정합성을 함께 안정화한 사례입니다.</p>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ PROBLEM ══ -->
+<section class="case-section">
+  <div class="wrap">
+    <h2 class="case-section-title fi">문제</h2>
+    <div class="case-section-content fi">
+      <div class="case-text-block">
+        대량 취소·반품·재배송 처리 과정에서 동일한 항목을 반복 입력해야 하는 구간이 많아 처리 피로도와 입력 실수 가능성이 높았습니다.
+      </div>
+      <div class="case-text-block">
+        특히 미출고, 출고누락 등 케이스별로 귀책대상이 달라지는데 담당자들이 이를 자주 헷갈리면서 <strong>분류 오류가 반복되는 문제</strong>가 있었습니다.
+      </div>
+      <div class="case-text-block">
+        물류 외부 운영 구조에서는 귀책대상이 잘못 입력되면 이후 원인 분석, 비용 정산, 운영 집계데이터까지 함께 꼬일 수 있어 단순 속도보다 <strong>입력 기준의 표준화와 데이터 정합성 확보</strong>가 더 중요했습니다.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SOLUTION ══ -->
+<section class="case-section">
+  <div class="wrap">
+    <h2 class="case-section-title fi">해결책</h2>
+    <div class="case-section-content fi">
+
+      <!-- Subsection 1 -->
+      <div class="case-subsection">
+        <h3 class="case-subsection-title">1. 입력 기준을 먼저 정의했습니다</h3>
+        <p class="case-subsection-text">자동화를 하기 전에, 각 항목별로 어떤 값이 들어가야 하는지 기준을 명확히 정리했습니다.</p>
+        <div class="case-list">
+          <div class="case-list-item">재배송 / 환불 / 보상별 입력 항목 정의</div>
+          <div class="case-list-item">조건별 입력값 기준 정리</div>
+          <div class="case-list-item">처리 유형에 따른 입력 흐름 구분</div>
+        </div>
+      </div>
+
+      <!-- Subsection 2 -->
+      <div class="case-subsection">
+        <h3 class="case-subsection-title">2. 자동화 가능한 영역을 분리했습니다</h3>
+        <p class="case-subsection-text">업무 전체를 자동화하는 것이 아니라, 반복 입력과 기준값 반영이 가능한 영역을 선별해 자동화 대상으로 설정했습니다.</p>
+      </div>
+
+      <!-- Subsection 3 -->
+      <div class="case-subsection">
+        <h3 class="case-subsection-title">3. 자동화 로직을 설계하고 적용했습니다</h3>
+        <p class="case-subsection-text">Chrome Extension, VBA, Apps Script 등으로 반복 업무를 줄이는 보조자동화 도구를 함께 운영했고, <strong>생성형 AI를 로직 작성·수정·디버깅 보조에 활용</strong>해 비개발자 환경에서도 실제 업무 적용 수준까지 개선했습니다.</p>
+      </div>
+
+      <!-- Subsection 4 -->
+      <div class="case-subsection">
+        <h3 class="case-subsection-title">4. 수동 검수 구조를 함께 설계했습니다</h3>
+        <p class="case-subsection-text">모든 과정을 자동화하지 않고, 최종 판단은 담당자가 확인하도록 남겨 <strong>데이터 예외 상황과 오입력 리스크를 통제</strong>했습니다.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ OUTCOME ══ -->
+<section class="case-section">
+  <div class="wrap">
+    <h2 class="case-section-title fi">결과</h2>
+    <div class="case-section-content fi">
+      <div class="case-list">
+        <div class="case-list-item">기존 8단계 반복 입력을 <strong>2단계로 축소</strong></div>
+        <div class="case-list-item">입력 누락 및 오입력 감소</div>
+        <div class="case-list-item">정산 오류 및 보상 기준 혼선 감소</div>
+        <div class="case-list-item">후속 처리 정확도 향상</div>
+        <div class="case-list-item">생성형 AI 활용 역시 운영 생산성 향상에 기여한 것으로 인정되어, <strong>관련 도구를 비개발자 직군 중 유일하게 업무용 비용으로 승인</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ EVIDENCE ══ -->
+<section class="case-section">
+  <div class="wrap">
+    <h2 class="case-section-title fi">근거</h2>
+    <div class="evidence-grid fi">
+
+      <!-- Evidence 1 -->
+      <div class="evidence-item">
+        <div class="evidence-label">1. 재배송 등록 자동입력 설계</div>
+        <div class="evidence-placeholder"><img src="img/case3_ev1.png" alt="재배송 등록 자동입력 설계 화면 (Alt+Shift+D)" /></div>
+        <div class="evidence-desc">
+          재배송 등록 시 반복적으로 입력하던 주요 항목 6개를 Alt + Shift + D 단축키 한 번으로 자동 입력되도록 설계. 귀책대상 등 케이스별 기준값을 함께 반영해 담당자들이 자주 헷갈리던 분류 오류를 줄였고, 마지막 등록은 직접 확인 후 진행하도록 남김.
+        </div>
+      </div>
+
+      <!-- Evidence 2 -->
+      <div class="evidence-item">
+        <div class="evidence-label">2. 반품 등록 자동입력 설계</div>
+        <div class="evidence-placeholder"><img src="img/case3_ev2.png" alt="반품 등록 자동입력 설계 화면 (Alt+Shift+S)" /></div>
+        <div class="evidence-desc">
+          반품 등록 시 반복 입력하던 주요 항목 6개를 Alt + Shift + S 단축키로 자동 입력되도록 구성. 반복 입력 시간을 줄이는 동시에 기준값 오입력을 줄여 데이터 정합성을 높임.
+        </div>
+      </div>
+
+      <!-- Evidence 3 -->
+      <div class="evidence-item">
+        <div class="evidence-label">3. 생성형 AI의 실무 도구화 및 조직 승인</div>
+        <div class="evidence-placeholder"><img src="img/case3_ev3.png" alt="생성형 AI 실무 도구화 업무비용 승인 자료" /></div>
+        <div class="evidence-desc">
+          비개발자 환경에서도 생성형 AI를 로직 작성·수정·디버깅 보조에 실무적으로 활용했고, 그 기여도를 인정받아 비개발 직군 중 유일하게 관련 도구를 업무용 비용으로 전환.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ INSIGHT ══ -->
+<section class="case-section">
+  <div class="wrap">
+    <h2 class="case-section-title fi">인사이트</h2>
+    <div class="case-section-content fi">
+      <div class="case-list">
+        <div class="case-list-item">운영 자동화의 핵심은 단순히 빠르게 처리하는 것이 아니라, <strong>반복적으로 발생하는 분류 실수를 구조적으로 막는 것</strong>이었습니다.</div>
+        <div class="case-list-item">좋은 자동화는 모든 단계를 대신하는 것이 아니라, <strong>반복 입력은 줄이고 최종 확인은 사람에게 남겨 리스크를 통제하는 구조</strong>가 운영 리스크를 줄이는 데 중요하다는 점을 확인했습니다.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TAGS ══ -->
+<section class="case-section">
+  <div class="wrap">
+    <div class="case-tags fi">
+      <span class="case-tag">#Automation</span>
+      <span class="case-tag">#OperationsEfficiency</span>
+      <span class="case-tag">#DataIntegrity</span>
+    </div>
+  </div>
+</section>
+
+<div class="wrap"><div class="hr"></div></div>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-grid fi">
+      <div class="footer-info">
+        <div class="footer-name">오희은</div>
+        <div class="footer-sub">gldms1009@naver.com · 010-2357-2674</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Header scroll effect
+  const header = document.getElementById('hd');
+  let lastScrollTop = 0;
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    if (scrollTop > 10) {
+      header.classList.add('on');
+    } else {
+      header.classList.remove('on');
+    }
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+  });
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const nav = document.getElementById('nav');
+
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('open');
+    nav.classList.toggle('open');
+  });
+
+  // Close mobile nav when link clicked
+  nav.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navToggle.classList.remove('open');
+      nav.classList.remove('open');
+    });
+  });
+
+  // Fade-in intersection observer
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('show');
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.fi').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
