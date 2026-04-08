@@ -150,7 +150,7 @@
           특정 조건에서는 정상 주문이 불가능했지만, <strong>시스템상 오류 원인이 사용자에게 충분히 전달되지 않았습니다.</strong>
         </div>
         <div class="problem-item">
-          고객은 이를 단순 시스템 오류로 인식하고 이탈하거나 고객 문의로 이어졌고, <strong>내부에서도 명확한 기준 없이 개별 대응</strong>으로 처리해야 했습니다.
+          주문에 실패한 고객은 이유를 이해하지 못한 채 재시도 없이 이탈했습니다. B2B 서비스에서 <strong>이런 작은 UX 불편이 고객 이탈과 매출 손실로 직결</strong>되는 구조였고, 내부에서도 명확한 기준 없이 개별 대응으로 처리해야 했습니다.
         </div>
         <div class="problem-item">
           특히 <strong>외부 시스템(API) 응답 제약</strong>으로 인해, 기획 단계에서 의도한 수준의 세부 예외 처리 로직을 그대로 구현하기 어려운 상태였습니다.
@@ -187,7 +187,7 @@
       <h2 class="sec-title">어떤 성과를 얻었나요?</h2>
       <div class="outcome-list fi">
         <div class="outcome-item">배송 가능일이 다른 상품이 포함된 경우, <strong>주문 차단 사유를 별도 페이지 이동 없이 장바구니 내에서 즉시 안내</strong>하도록 설계</div>
-        <div class="outcome-item">주문 실패 상황에서 <strong>고객 혼란과 즉각적인 이탈</strong>을 줄일 수 있는 구조 마련</div>
+        <div class="outcome-item">주문 불가 상황에서 고객이 이유를 이해하고 흐름을 이어갈 수 있도록 설계 → <strong>즉각 이탈 방지 및 잠재 매출 손실 구조 해소</strong></div>
         <div class="outcome-item">오류 인식으로 인한 고객 문의 유입을 줄이고, <strong>기술 제약을 고려한 실행 가능한 개선안</strong>으로 개발·운영 간 합의</div>
         <div class="outcome-item">유사한 제약 상황이 발생하더라도 <strong>재사용 가능한 대응 구조</strong> 확보</div>
         <div class="outcome-item"><strong>관련 고객 문의 일 2–3건 → 0건</strong> (구조 개선 이후)</div>
@@ -195,7 +195,7 @@
       <div class="metric-box fi">
         <div class="metric-label">Key Metric</div>
         <div class="metric-value">일 2–3건 → 0건</div>
-        <div class="metric-sub">고객 문의 유입 감소</div>
+        <div class="metric-sub">오류 문의 감소 · 이탈로 인한 매출 손실 구조 해소</div>
       </div>
     </div>
   </section>
@@ -282,4 +282,4 @@
     });
   </script>
 </body>
-</html>
+    </html>
