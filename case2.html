@@ -1,79 +1,9 @@
-
-  <footer id="contact">
-    <div class="wrap">
-      <div class="footer-grid">
-        <div>
-          <div class="footer-name">ì¤í¬ì</div>
-          <div class="footer-sub">ìë¹ì¤ ê¸°í Â· ì´ì ë§¤ëì </div>
-          <div class="footer-sub" style="margin-top:4px;">gldms1009@naver.com &nbsp;Â·&nbsp; 010-2357-2674</div>
-        </div>
-        <div class="footer-actions">
-          <a href="mailto:gldms1009@naver.com" class="btn btn-dark">ì´ë©ì¼ ë³´ë´ê¸°</a>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <script>
-    const hd = document.getElementById('hd');
-    window.addEventListener('scroll', () => { hd.classList.toggle('on', window.scrollY > 8); }, { passive: true });
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.fi').forEach(el => io.observe(el));
-    const navToggle = document.getElementById('navToggle');
-    const navEl = document.getElementById('nav');
-    navToggle.addEventListener('click', () => { navToggle.classList.toggle('open'); navEl.classList.toggle('open'); });
-    document.querySelectorAll('nav a, .btn[href^="#"]').forEach(a => {
-      a.addEventListener('click', e => {
-        const href = a.getAttribute('href');
-        if (href.startsWith('#')) { e.preventDefault(); const target = document.querySelector(href); if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' }); navToggle.classList.remove('open'); navEl.classList.remove('open'); }
-      });
-    });
-  </script>
-</body>
-          </html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Case 2. 시스템 제약 환경에서의 예외 처리 로직 재정의 및 Fail-soft UX 설계 | 오희은 포트폴리오</title>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net">
-  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --white: #FFFFFF; --bg-soft: #F7F7F8; --bg-card: #F3F3F4;
-      --border: #E5E5E6; --text-1: #141416; --text-2: #50505A; --text-3: #909098;
-      --charcoal: #282D32; --charcoal-2: #1A1E21; --charcoal-a: rgba(40,45,50,0.07);
-      --sh-md: 0 4px 20px rgba(0,0,0,0.09); --r: 10px; --r-sm: 6px;
-      --ease: cubic-bezier(.4,0,.2,1); --t: 0.22s;
-    }
-    html { scroll-behavior: smooth; font-size: 16px; }
-    body { font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif; color: var(--text-1); background: var(--white); -webkit-font-smoothing: antialiased; line-height: 1.7; }
-    .wrap { max-width: 980px; margin: 0 auto; padding: 0 28px; }
-    .hr { width: 100%; height: 1px; background: var(--border); }
-    header { position: sticky; top: 0; z-index: 200; background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid transparent; transition: border-color var(--t) var(--ease); }
-    header.on { border-bottom-color: var(--border); }
-    .h-inner { max-width: 980px; margin: 0 auto; padding: 0 28px; height: 62px; display: flex; align-items: center; justify-content: space-between; }
-    .logo { font-size: 16px; font-weight: 800; color: var(--charcoal); text-decoration: none; letter-spacing: -0.02em; }
-    nav { display: flex; gap: 30px; }
-    nav a { font-size: 14px; font-weight: 500; color: var(--text-2); text-decoration: none; transition: color var(--t); }
-    nav a:hover { color: var(--charcoal); }
-    .nav-toggle { display: none; width: 36px; height: 36px; border: none; background: none; cursor: pointer; flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
-    .nav-toggle span { display: block; width: 20px; height: 2px; background: var(--charcoal); border-radius: 2px; transition: transform var(--t) var(--ease), opacity var(--t); }
-    .nav-toggle.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-toggle.open span:nth-child(2) { opacity: 0; }
-    .nav-toggle.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-    @media (max-width: 800px) {
-      .nav-toggle { display: flex; }
-      nav { display: none; position: absolute; top: 62px; left: 0; right: 0; background: rgba(255,255,255,0.96); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); flex-direction: column; gap: 0; border-bottom: 1px solid var(--border); padding: 8px 0; }
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Case 2. ìì¤í ì ì½ íê²½ììì ìì¸ ì²ë¦¬ ë¡ì§ ì¬ì ì ë° Fail-soft UX ì¤ê³ | ì¤í¬ì í¬í¸í´ë¦¬ì¤</title>
+  <title>Case 2. 시스템 제약 환경에서의 예외 처리 로직 재정의 및 Fail-soft UX 설계 | 오희은 포트폴리오</title>
   <link rel="preconnect" href="https://cdn.jsdelivr.net">
   <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" rel="stylesheet">
   <style>
@@ -184,13 +114,13 @@
 <body>
   <header id="hd">
     <div class="h-inner">
-      <a href="index.html" class="logo">ì¤í¬ì</a>
+      <a href="index.html" class="logo">오희은</a>
       <nav id="nav">
-        <a href="index.html#about">ìê°</a>
-        <a href="index.html#cases">ì¼ì´ì¤ ì¤í°ë</a>
-        <a href="index.html#contact">ì°ë½íê¸°</a>
+        <a href="index.html#about">소개</a>
+        <a href="index.html#cases">케이스 스터디</a>
+        <a href="index.html#contact">연락하기</a>
       </nav>
-      <button class="nav-toggle" id="navToggle" aria-label="ë©ë´">
+      <button class="nav-toggle" id="navToggle" aria-label="메뉴">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -200,13 +130,13 @@
     <section class="case-hero">
       <a href="index.html#cases" class="case-hero-nav">
         <svg viewBox="0 0 14 14" fill="none"><path d="M11.5 7H2.5M5 3.5L1.5 7L5 10.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        í¬í¸í´ë¦¬ì¤ë¡ ëìê°ê¸°
+        포트폴리오로 돌아가기
       </a>
-      <h1 class="case-hero-title">ìì¤í ì ì½ íê²½ììì ìì¸ ì²ë¦¬ ë¡ì§ ì¬ì ì ë° Fail-soft UX ì¤ê³</h1>
-      <div class="case-hero-summary">ë°°ì¡ ê°ë¥ì¼ì´ ë¤ë¥¸ ìíì´ ì¥ë°êµ¬ëì í¨ê» ë´ê¸°ë©´ ì£¼ë¬¸ì´ ì°¨ë¨ëë ìí©ìì, ê³ ê°ì´ ì´ì ë¥¼ ëª¨ë¥¸ ì± ì´ííë ë¬¸ì ë¥¼ ë°ê²¬íê³  <strong>ì§ì  ê°ì ì ì ì</strong>íìµëë¤. ê¸°ì ì  ì ì½ì¼ë¡ ëª¨ë  ìì¸ ì¼ì´ì¤ë¥¼ ì²ë¦¬íê¸° ì´ë ¤ì´ ìí©ìì, ì¤í ê°ë¥í ìµì ë¨ì(MVP)ë¡ ë°©í¥ì ì íí´ ê³ ê°ì´ ì£¼ë¬¸ ë¶ê° ì´ì ë¥¼ ì´í´íê³  íë¦ì ì´ì´ê° ì ìëë¡ <strong>Fail-soft UXë¥¼ ì§ì  ê¸°í</strong>í ì¬ë¡ìëë¤. <strong>ê°ë°íê³¼ì íìë¥¼ íµí´ ê¸°ì  ì ì½ ììì ìµì ì ìë£¨ì</strong>ì ëì¶íìµëë¤.</div>
+      <h1 class="case-hero-title">시스템 제약 환경에서의 예외 처리 로직 재정의 및 Fail-soft UX 설계</h1>
+      <div class="case-hero-summary">배송 가능일이 다른 상품이 장바구니에 함께 담기면 주문이 차단되는 상황에서, 고객이 이유를 모른 채 이탈하는 문제를 발견하고 <strong>직접 개선을 제안</strong>했습니다. 기술적 제약으로 모든 예외 케이스를 처리하기 어려운 상황에서, 실행 가능한 최소 단위(MVP)로 방향을 전환해 고객이 주문 불가 이유를 이해하고 흐름을 이어갈 수 있도록 <strong>Fail-soft UX를 직접 기획</strong>한 사례입니다. <strong>개발팀과의 협의를 통해 기술 제약 안에서 최선의 솔루션</strong>을 도출했습니다.</div>
       <div class="case-hero-meta">
         <span class="meta-chip">#FailSoftUX</span>
-        <span class="meta-chip">#MVPê¸°í</span>
+        <span class="meta-chip">#MVP기획</span>
         <span class="meta-chip">#ExceptionDesign</span>
       </div>
     </section>
@@ -214,16 +144,16 @@
 
   <section class="sec">
     <div class="wrap">
-      <h2 class="sec-title">ê³ ê°ì ì´ì ë¥¼ ëª°ëê³ , ë´ë¶ìë ê¸°ì¤ì´ ìììµëë¤</h2>
+      <h2 class="sec-title">고객은 이유를 몰랐고, 내부에도 기준이 없었습니다</h2>
       <div class="problem-list fi">
         <div class="problem-item">
-          ë°°ì¡ ê°ë¥ì¼ì´ ë¤ë¥¸ ìíì´ ì¥ë°êµ¬ëì í¨ê» ë´ê¸°ë©´ ì£¼ë¬¸ì´ ì°¨ë¨ë©ëë¤. ê·¸ë°ë° <strong>ê³ ê°ìê²ë ì´ì ê° ì í ì ë¬ëì§ ìì ìì¤í ì¤ë¥ì²ë¼ ì¸ì</strong>ëìµëë¤.
+          배송 가능일이 다른 상품이 장바구니에 함께 담기면 주문이 차단됩니다. 그런데 <strong>고객에게는 이유가 전혀 전달되지 않아 시스템 오류처럼 인식</strong>됐습니다.
         </div>
         <div class="problem-item">
-          ì£¼ë¬¸ì ì¤í¨í ê³ ê°ì ì´ì ë¥¼ ëª¨ë¥¸ ì± ì¬ìë ìì´ ì´ííìµëë¤. í¹í <strong>ë¬´ë£ë°°ì¡ ì¡°ê±´(4ë§ì)ì ë§ì¶ë ¤ ì¬ë¬ ìíì í¨ê» ë´ë¤ê° ì´ ìí©ì ê±¸ë¦¬ë ê²½ì°</strong>ë ì¦ì ì¥ë°êµ¬ë ì´íê³¼ ë§¤ì¶ ìì¤ë¡ ì´ì´ì¡ê³ , ë´ë¶ììë ë³ë ê¸°ì¤ ìì´ "ìíì íëì© ë¹¼ë³´ì¸ì"ë¼ë ìë´ê° ì ë¶ììµëë¤.
+          주문에 실패한 고객은 이유를 모른 채 재시도 없이 이탈했습니다. 특히 <strong>무료배송 조건(4만원)을 맞추려 여러 상품을 함께 담다가 이 상황에 걸리는 경우</strong>도 잦아 장바구니 이탈과 매출 손실로 이어졌고, 내부에서도 별도 기준 없이 "상품을 하나씩 빼보세요"라는 안내가 전부였습니다.
         </div>
         <div class="problem-item">
-          í¹í <strong>ì¸ë¶ ìì¤í(API) ìëµ ì ì½</strong>ì¼ë¡ ì¸í´, ê¸°í ë¨ê³ìì ìëí ìì¤ì ì¸ë¶ ìì¸ ì²ë¦¬ ë¡ì§ì ê·¸ëë¡ êµ¬ííê¸° ì´ë ¤ì´ ìíììµëë¤.
+          특히 <strong>외부 시스템(API) 응답 제약</strong>으로 인해, 기획 단계에서 의도한 수준의 세부 예외 처리 로직을 그대로 구현하기 어려운 상태였습니다.
         </div>
       </div>
     </div>
@@ -231,22 +161,22 @@
 
   <section class="sec sec-alt">
     <div class="wrap">
-      <h2 class="sec-title">ì ì½ ììì ì¤í ê°ë¥í ìµì ìì ì°¾ììµëë¤</h2>
+      <h2 class="sec-title">제약 안에서 실행 가능한 최선안을 찾았습니다</h2>
       <div class="did-list fi">
         <div class="did-item">
-          <div class="did-number">1. êµ¬í ê°ë¥ì±ì í¬í¨í ì¬ì¤ê³</div>
-          <div class="did-title">ì´ìì  ë¡ì§ì íê³ë¥¼ ë¨¼ì  íì¸</div>
-          <div class="did-desc">ì´ê¸°ìë ëª¨ë  ì¤í¨ ì¡°ê±´ì ìì¤íì ì¼ë¡ êµ¬ë¶íë ¤ íì§ë§, êµ¬í ê°ë¥ì±ê³¼ ì¼ì  ì¸¡ë©´ìì íì¤ì ì¸ íê³ê° ììì íì¸íìµëë¤. <strong>êµ¬í ê°ë¥ì±ê¹ì§ í¬í¨í´ ìì¸ ì²ë¦¬ ë°©ì ìì²´ë¥¼ ë¤ì ì¤ê³</strong>í´ì¼ íë¤ê³  íë¨íìµëë¤.</div>
+          <div class="did-number">1. 구현 가능성을 포함한 재설계</div>
+          <div class="did-title">이상적 로직의 한계를 먼저 확인</div>
+          <div class="did-desc">초기에는 모든 실패 조건을 시스템적으로 구분하려 했지만, 구현 가능성과 일정 측면에서 현실적인 한계가 있음을 확인했습니다. <strong>구현 가능성까지 포함해 예외 처리 방식 자체를 다시 설계</strong>해야 한다고 판단했습니다.</div>
         </div>
         <div class="did-item">
-          <div class="did-number">2. API ìëµê° ê¸°ë° MVP ì¤ê³</div>
-          <div class="did-title">ê¸°ì  ì ì½ì ì ì ë¡ í ì¤í ê°ë¥í ì¤ê³</div>
-          <div class="did-desc">API ìëµê°ì¼ë¡ íë¨ ê°ë¥í ì¡°ê±´ë§ì ê¸°ì¤ì¼ë¡ ì¤í¨ ì íì ë¤ì ì ìíìµëë¤. <strong>ê¸°ì  ì ì½ì ì ì ë¡ í ì¤í ê°ë¥í ìµì ë¨ì(MVP) í´ë²</strong>ì¼ë¡ ë°©í¥ì ì íí´ ê°ë°íê³¼ í©ìíìµëë¤.</div>
+          <div class="did-number">2. API 응답값 기반 MVP 설계</div>
+          <div class="did-title">기술 제약을 전제로 한 실행 가능한 설계</div>
+          <div class="did-desc">API 응답값으로 판단 가능한 조건만을 기준으로 실패 유형을 다시 정의했습니다. <strong>기술 제약을 전제로 한 실행 가능한 최소 단위(MVP) 해법</strong>으로 방향을 전환해 개발팀과 합의했습니다.</div>
         </div>
         <div class="did-item">
-          <div class="did-number">3. Fail-soft UX ì¤ê³</div>
-          <div class="did-title">ì¤ë¥ ìí©ììë ìì°ì¤ë¬ì´ íë¦ ì ì§</div>
-          <div class="did-desc">ì£¼ë¬¸ ì¤í¨ ì ì¸ë¶ ìì¸ì ëª¨ë ì¤ëªíì§ ìëë¼ë, <strong>ì ì§ê¸ ì§íí  ì ìëì§ë¥¼ ì´í´í  ì ìëë¡ Fail-soft UXë¥¼ ì¤ê³</strong>íìµëë¤. ì¤ë¥ ìí©ìì FAQ ë° ì¶ê° ìë´ë¡ ìì°ì¤ë½ê² ì°ê²°ëëë¡ íë¦ì ë³´ìíê³ , ì´ì ëì ê¸°ì¤ë í¨ê» ì ë¦¬í´ ì´ì í¼ì ì ì¤ììµëë¤.</div>
+          <div class="did-number">3. Fail-soft UX 설계</div>
+          <div class="did-title">오류 상황에서도 자연스러운 흐름 유지</div>
+          <div class="did-desc">주문 실패 시 세부 원인을 모두 설명하지 않더라도, <strong>왜 지금 진행할 수 없는지를 이해할 수 있도록 Fail-soft UX를 설계</strong>했습니다. 오류 상황에서 FAQ 및 추가 안내로 자연스럽게 연결되도록 흐름을 보완하고, 운영 대응 기준도 함께 정리해 운영 혼선을 줄였습니다.</div>
         </div>
       </div>
     </div>
@@ -254,40 +184,40 @@
 
   <section class="sec">
     <div class="wrap">
-      <h2 class="sec-title">ì´ë¤ ì±ê³¼ë¥¼ ì»ìëì?</h2>
+      <h2 class="sec-title">어떤 성과를 얻었나요?</h2>
       <div class="outcome-list fi">
-        <div class="outcome-item">ë°°ì¡ ê°ë¥ì¼ì´ ë¤ë¥¸ ìíì´ í¬í¨ë ê²½ì°, <strong>ì£¼ë¬¸ ì°¨ë¨ ì¬ì ë¥¼ ë³ë íì´ì§ ì´ë ìì´ ì¥ë°êµ¬ë ë´ìì ì¦ì ìë´</strong>íëë¡ ì¤ê³</div>
-        <div class="outcome-item">ì£¼ë¬¸ ë¶ê° ìí©ìì ê³ ê°ì´ ì´ì ë¥¼ ì´í´íê³  íë¦ì ì´ì´ê° ì ìëë¡ ì¤ê³ â <strong>ì¦ê° ì´í ë°©ì§ ë° ì ì¬ ë§¤ì¶ ìì¤ êµ¬ì¡° í´ì</strong></div>
-        <div class="outcome-item">ì¤ë¥ ì¸ìì¼ë¡ ì¸í ê³ ê° ë¬¸ì ì ìì ì¤ì´ê³ , <strong>ê¸°ì  ì ì½ì ê³ ë ¤í ì¤í ê°ë¥í ê°ì ì</strong>ì¼ë¡ ê°ë°Â·ì´ì ê° í©ì</div>
-        <div class="outcome-item">ì ì¬í ì ì½ ìí©ì´ ë°ìíëë¼ë <strong>ì¬ì¬ì© ê°ë¥í ëì êµ¬ì¡°</strong> íë³´</div>
-        <div class="outcome-item"><strong>ê´ë ¨ ê³ ê° ë¬¸ì ì¼ 2â3ê±´ â 0ê±´</strong> (êµ¬ì¡° ê°ì  ì´í)</div>
+        <div class="outcome-item">배송 가능일이 다른 상품이 포함된 경우, <strong>주문 차단 사유를 별도 페이지 이동 없이 장바구니 내에서 즉시 안내</strong>하도록 설계</div>
+        <div class="outcome-item">주문 불가 상황에서 고객이 이유를 이해하고 흐름을 이어갈 수 있도록 설계 → <strong>즉각 이탈 방지 및 잠재 매출 손실 구조 해소</strong></div>
+        <div class="outcome-item">오류 인식으로 인한 고객 문의 유입을 줄이고, <strong>기술 제약을 고려한 실행 가능한 개선안</strong>으로 개발·운영 간 합의</div>
+        <div class="outcome-item">유사한 제약 상황이 발생하더라도 <strong>재사용 가능한 대응 구조</strong> 확보</div>
+        <div class="outcome-item"><strong>관련 고객 문의 일 2–3건 → 0건</strong> (구조 개선 이후)</div>
       </div>
       <div class="metric-box fi">
         <div class="metric-label">Key Metric</div>
-        <div class="metric-value">ì¼ 2â3ê±´ â 0ê±´</div>
-        <div class="metric-sub">ì¤ë¥ ë¬¸ì ê°ì Â· ì´íë¡ ì¸í ë§¤ì¶ ìì¤ êµ¬ì¡° í´ì</div>
+        <div class="metric-value">일 2–3건 → 0건</div>
+        <div class="metric-sub">오류 문의 감소 · 이탈로 인한 매출 손실 구조 해소</div>
       </div>
     </div>
   </section>
 
   <section class="sec sec-alt">
     <div class="wrap">
-      <h2 class="sec-title">ê·¼ê±°</h2>
+      <h2 class="sec-title">근거</h2>
       <div class="evidence-grid fi">
         <div class="evidence-item">
-          <div class="evidence-label">1. ì¥ë°êµ¬ë ë´ Fail-soft ìë´ ì¤ê³</div>
-          <div class="evidence-image"><img src="img/case2_ev1.png" alt="ì¥ë°êµ¬ë ë´ Fail-soft ìë´ ì¤ê³"></div>
-          <div class="evidence-desc">ë°°ì¡ ê°ë¥ì¼ì´ ë¤ë¥¸ ìíì´ í¬í¨ë ê²½ì°, ë³ë íì´ì§ ì´ë ìì´ ì¥ë°êµ¬ë ììì ì¦ì ì£¼ë¬¸ ë¶ê° ì¬ì ë¥¼ íì¸í  ì ìëë¡ ì¤ê³íìµëë¤.</div>
+          <div class="evidence-label">1. 장바구니 내 Fail-soft 안내 설계</div>
+          <div class="evidence-image"><img src="img/case2_ev1.png" alt="장바구니 내 Fail-soft 안내 설계"></div>
+          <div class="evidence-desc">배송 가능일이 다른 상품이 포함된 경우, 별도 페이지 이동 없이 장바구니 안에서 즉시 주문 불가 사유를 확인할 수 있도록 설계했습니다.</div>
         </div>
         <div class="evidence-item">
-          <div class="evidence-label">2. ê¸°ì  ì ì½ ê¸°ë° ìì¸ ì²ë¦¬ ì¬ì ì</div>
-          <div class="evidence-image no-img">ê¸°ì  ì ì½ ê¸°ë° ì¤ê³ ìë£</div>
-          <div class="evidence-desc">ëª¨ë  ì¤í¨ ì¡°ê±´ì ì¸ë¶ííë ë°©ì ëì , API ìëµê°ì¼ë¡ ì¤ì  íë¨ ê°ë¥í ì¡°ê±´ë§ ë¨ê²¨ êµ¬í ê°ë¥í ë²ì ììì ìì¸ ì²ë¦¬ êµ¬ì¡°ë¥¼ ë¤ì ì¤ê³íìµëë¤.</div>
+          <div class="evidence-label">2. 기술 제약 기반 예외 처리 재정의</div>
+          <div class="evidence-image no-img">기술 제약 기반 설계 자료</div>
+          <div class="evidence-desc">모든 실패 조건을 세분화하는 방식 대신, API 응답값으로 실제 판단 가능한 조건만 남겨 구현 가능한 범위 안에서 예외 처리 구조를 다시 설계했습니다.</div>
         </div>
         <div class="evidence-item" style="grid-column: 1 / -1;">
-          <div class="evidence-label">3. ë¬¸ì  ë°ê²¬ ë° ê°ì  ì ì ë°°ê²½</div>
-          <img src="img/case2_ev3.jpg" alt="ë´ë¶ ê°ì  ì ì ì»¤ë®¤ëì¼ì´ì" style="width:100%; border-radius:8px;">
-          <div class="evidence-desc">ë°°ì¡ì¼ ì¶©ë ì¼ì´ì¤ë¥¼ ì§ì  íìíê³ , ì´ìíì ê°ì ì ì ìíìµëë¤. "ëª¨ë  ì¼ì´ì¤ë¥¼ ìë´íê¸° ì´ë µë¤ë ê±´ ì´í´íì§ë§, ê³ ê°ì´ ìµìí ì ë§íëì§ë§ ììë ë¶ì ê³¼ ì´íì´ ì¤ ê²"ì´ë¼ë ê´ì ìì UX ê°ì  íìì±ì êµ¬ì²´ì ì¼ë¡ ì ìíê³ , ì´ ì ìì´ ê°ì  ì°©ìì ê³ê¸°ê° ëìµëë¤. í¹í ë¬´ë£ë°°ì¡ ê¸°ì¤(4ë§ì)ì ë§ì¶ë ¤ë¤ ì´ ìí©ì ê±¸ë¦¬ë ê³ ê°ì ê²½íì ì§ì  ì§ì´ë¸ ì , ê·¸ë¦¬ê³  ê¸°ì¡´ ìë´ ë°©ì("ìí íëì© ë¹¼ë³´ì¸ì")ì´ ê³ ê° ìì¥ìì ìì½ë¤ë ì ì ê·¼ê±°ë¡ ì ìíìµëë¤.</div>
+          <div class="evidence-label">3. 문제 발견 및 개선 제안 배경</div>
+          <img src="img/case2_ev3.png" alt="내부 개선 제안 커뮤니케이션" style="width:100%; border-radius:8px;">
+          <div class="evidence-desc">배송일 충돌 케이스를 직접 파악하고, 운영팀에 개선을 제안했습니다. "모든 케이스를 안내하기 어렵다는 건 이해하지만, 고객이 최소한 왜 막히는지만 알아도 불신과 이탈이 줄 것"이라는 관점에서 UX 개선 필요성을 구체적으로 제시했고, 이 제안이 개선 착수의 계기가 됐습니다. 특히 무료배송 기준(4만원)을 맞추려다 이 상황에 걸리는 고객의 경험을 직접 짚어낸 점, 그리고 기존 안내 방식("상품 하나씩 빼보세요")이 고객 입장에서 아쉽다는 점을 근거로 제시했습니다.</div>
         </div>
       </div>
     </div>
@@ -295,19 +225,19 @@
 
   <section class="sec">
     <div class="wrap">
-      <h2 class="sec-title">ë°°ì´ ì </h2>
+      <h2 class="sec-title">배운 점</h2>
       <div class="insight-list fi">
         <div class="insight-item">
           <div class="insight-num">1</div>
-          <div class="insight-text"><strong>ìë²½í ë¡ì§ë³´ë¤ ì¤í¨ë¥¼ ì¤ëªíë ì¤ê³ê° ì¬ì©ì ì ë¢°ë¥¼ ë§ë¤ììµëë¤.</strong> ëª¨ë  ì¤ë¥ë¥¼ ê¸°ì ì ì¼ë¡ í´ê²°íê¸° ì´ë ¤ì¸ ë, ê³ ê°ì´ ìí©ì ì´í´íê³  ìì©í  ì ìëë¡ íë ê²ì´ ë í¨ê³¼ì ì´ììµëë¤.</div>
+          <div class="insight-text"><strong>완벽한 로직보다 실패를 설명하는 설계가 사용자 신뢰를 만들었습니다.</strong> 모든 오류를 기술적으로 해결하기 어려울 때, 고객이 상황을 이해하고 수용할 수 있도록 하는 것이 더 효과적이었습니다.</div>
         </div>
         <div class="insight-item">
           <div class="insight-num">2</div>
-          <div class="insight-text"><strong>ê¸°ì ì  ì ì½ì í¬ê¸°ì ì´ì ê° ìëë¼ ì°ì ìì ì¡°ì ì ê¸°ì¤ì´ ëìµëë¤.</strong> ì ì½ ììì ì ë§ ì¤ìí ë¬¸ì ê° ë¬´ìì¸ì§ ë¤ì ìê°íê² íê³ , ê·¸ê²ì´ ë ëì ìë£¨ìì ë§ë¤ììµëë¤.</div>
+          <div class="insight-text"><strong>기술적 제약은 포기의 이유가 아니라 우선순위 조정의 기준이 됐습니다.</strong> 제약 속에서 정말 중요한 문제가 무엇인지 다시 생각하게 했고, 그것이 더 나은 솔루션을 만들었습니다.</div>
         </div>
         <div class="insight-item">
           <div class="insight-num">3</div>
-          <div class="insight-text"><strong>ê¸°íìì ì­í ì ì ëµì ê³ ì§íë ê²ì´ ìëë¼ ì¤í ê°ë¥í ìµì ìì ì°¾ë ì¼</strong>ìì ë°°ì ìµëë¤. ê°ë°íê³¼ í¨ê» ì ì½ì ê³µì íê³ , ê·¸ ììì ê³ ê°ìê² ìµëíì ê°ì¹ë¥¼ ì ë¬íë êµ¬ì¡°ë¥¼ ë§ëë ê²ì´ íµì¬ì´ììµëë¤.</div>
+          <div class="insight-text"><strong>기획자의 역할은 정답을 고집하는 것이 아니라 실행 가능한 최선안을 찾는 일</strong>임을 배웠습니다. 개발팀과 함께 제약을 공유하고, 그 안에서 고객에게 최대한의 가치를 전달하는 구조를 만드는 것이 핵심이었습니다.</div>
         </div>
       </div>
     </div>
@@ -317,9 +247,44 @@
     <div class="wrap">
       <div class="tags-row fi">
         <span class="tag">#FailSoftUX</span>
-        <span class="tag">#MVPê¸°í</span>
+        <span class="tag">#MVP기획</span>
         <span class="tag">#ExceptionDesign</span>
         <span class="tag">#DevCollaboration</span>
       </div>
     </div>
   </section>
+
+  <footer id="contact">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-name">오희은</div>
+          <div class="footer-sub">서비스 기획 · 운영 매니저</div>
+          <div class="footer-sub" style="margin-top:4px;">gldms1009@naver.com &nbsp;·&nbsp; 010-2357-2674</div>
+        </div>
+        <div class="footer-actions">
+          <a href="mailto:gldms1009@naver.com" class="btn btn-dark">이메일 보내기</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const hd = document.getElementById('hd');
+    window.addEventListener('scroll', () => { hd.classList.toggle('on', window.scrollY > 8); }, { passive: true });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('show'); io.unobserve(e.target); } });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.fi').forEach(el => io.observe(el));
+    const navToggle = document.getElementById('navToggle');
+    const navEl = document.getElementById('nav');
+    navToggle.addEventListener('click', () => { navToggle.classList.toggle('open'); navEl.classList.toggle('open'); });
+    document.querySelectorAll('nav a, .btn[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        if (href.startsWith('#')) { e.preventDefault(); const target = document.querySelector(href); if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' }); navToggle.classList.remove('open'); navEl.classList.remove('open'); }
+      });
+    });
+  </script>
+</body>
+        </html>
